@@ -140,12 +140,14 @@ public class MainActivity extends AppCompatActivity
         {
             if(!lightOn)
             {
-                lightbulb.setImageResource(R.drawable.lightbulb_twotemp);
+                lightbulb.setImageBitmap(
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, 100, 100));
                 lightOn=true;
             }
             else
             {
-                lightbulb.setImageResource(R.drawable.lightbulb_onetemp);
+                lightbulb.setImageBitmap(
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, 100, 100));
                 lightOn=false;
             }
         }
@@ -153,12 +155,14 @@ public class MainActivity extends AppCompatActivity
         {
             if(!heartOn)
             {
-                heart.setImageResource(R.drawable.heart_twotemp);
+                heart.setImageBitmap(
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, 100, 100));
                 heartOn=true;
             }
             else
             {
-                heart.setImageResource(R.drawable.heart_onetemp);
+                heart.setImageBitmap(
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, 100, 100));
                 heartOn=false;
             }
         }
@@ -166,12 +170,14 @@ public class MainActivity extends AppCompatActivity
         {
             if(!watchOn)
             {
-                watch.setImageResource((R.drawable.watch_vibrate_twotemp));
+                watch.setImageBitmap(
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, 100, 100));
                 watchOn=true;
             }
             else
             {
-                watch.setImageResource((R.drawable.watch_vibrate_onetemp));
+                watch.setImageBitmap(
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, 100, 100));
                 watchOn=false;
             }
 
@@ -180,12 +186,14 @@ public class MainActivity extends AppCompatActivity
         {
             if(!speechOn)
             {
-                speech.setImageResource(R.drawable.speak_twotemp);
+                speech.setImageBitmap(
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, 100, 100));
                 speechOn=true;
             }
             else
             {
-                speech.setImageResource(R.drawable.speak_onetemp);
+                speech.setImageBitmap(
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, 100, 100));
                 speechOn=false;
             }
         }
