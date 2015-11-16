@@ -11,29 +11,35 @@ import android.widget.Button;
 
 public class SplashLoader extends AppCompatActivity implements View.OnClickListener {
 
-    Button loadingBar;
+    private Button loadingBar;
 
-    @Override
+
     protected void onCreate(Bundle savedInstanceState) {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        //com
+        setContentView(R.layout.activity_splash_loader);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         loadingBar = (Button) findViewById(R.id.progressBar);
         loadingBar.setOnClickListener(this);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_splash_loader);
+
+
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.progressBar)
         {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            switchToMain();
         }
+    }
+
+    private void switchToMain()
+    {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

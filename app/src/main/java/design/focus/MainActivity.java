@@ -1,5 +1,6 @@
 package design.focus;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,9 +13,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener
+{
+
+    private ImageButton lightbulb;
+    private ImageButton heart;
+    private ImageButton watch;
+    private ImageButton speech;
+
+    private boolean lightOn;
+    private boolean heartOn;
+    private boolean watchOn;
+    private boolean speechOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,15 +36,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -40,6 +45,24 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        lightbulb = (ImageButton) findViewById(R.id.light);
+        heart = (ImageButton) findViewById(R.id.heart);
+        watch = (ImageButton) findViewById(R.id.watch);
+        speech = (ImageButton) findViewById(R.id.speech);
+
+
+        lightbulb.setOnClickListener(this);
+        heart.setOnClickListener(this);
+        watch.setOnClickListener(this);
+        speech.setOnClickListener(this);
+
+        //temp
+        lightOn = false;
+        heartOn = false;
+        watchOn = false;
+        speechOn = false;
+
     }
 
     @Override
@@ -97,5 +120,63 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        if(v.getId() == R.id.light)
+        {
+            if(!lightOn)
+            {
+                lightbulb.setImageResource(R.drawable.lightbulb_2temp);
+                lightOn=true;
+            }
+            else
+            {
+                lightbulb.setImageResource(R.drawable.lightbulb_1temp);
+                lightOn=false;
+            }
+        }
+        if(v.getId() == R.id.heart)
+        {
+            if(!heartOn)
+            {
+                heart.setImageResource(R.drawable.heart_2temp);
+                heartOn=true;
+            }
+            else
+            {
+                heart.setImageResource(R.drawable.heart_1temp);
+                heartOn=false;
+            }
+        }
+        if(v.getId() == R.id.watch)
+        {
+            if(!watchOn)
+            {
+                watch.setImageResource((R.drawable.watch_vibrate_2tmep));
+                watchOn=true;
+            }
+            else
+            {
+                watch.setImageResource((R.drawable.watch_vibrate_1temp));
+                watchOn=false;
+            }
+
+        }
+        if(v.getId() == R.id.speech)
+        {
+            if(!speechOn)
+            {
+                speech.setImageResource(R.drawable.speak_2temp);
+                speechOn=true;
+            }
+            else
+            {
+                speech.setImageResource(R.drawable.speak_1temp);
+                speechOn=false;
+            }
+        }
     }
 }
