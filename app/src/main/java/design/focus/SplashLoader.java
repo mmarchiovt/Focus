@@ -18,6 +18,7 @@ public class SplashLoader extends AppCompatActivity implements View.OnClickListe
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        //comment
 
         loadingBar = (Button) findViewById(R.id.progressBar);
         loadingBar.setOnClickListener(this);
