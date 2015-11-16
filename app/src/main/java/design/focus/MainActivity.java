@@ -122,19 +122,18 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
     public void onClick(View v)
     {
         if(v.getId() == R.id.light)
         {
             if(!lightOn)
             {
-                lightbulb.setImageResource(R.drawable.lightbulb_2temp);
+                lightbulb.setImageResource(R.drawable.lightbulb_twotemp);
                 lightOn=true;
             }
             else
             {
-                lightbulb.setImageResource(R.drawable.lightbulb_1temp);
+                lightbulb.setImageResource(R.drawable.lightbulb_onetemp);
                 lightOn=false;
             }
         }
@@ -142,12 +141,12 @@ public class MainActivity extends AppCompatActivity
         {
             if(!heartOn)
             {
-                heart.setImageResource(R.drawable.heart_2temp);
+                heart.setImageResource(R.drawable.heart_twotemp);
                 heartOn=true;
             }
             else
             {
-                heart.setImageResource(R.drawable.heart_1temp);
+                heart.setImageResource(R.drawable.heart_onetemp);
                 heartOn=false;
             }
         }
@@ -155,12 +154,12 @@ public class MainActivity extends AppCompatActivity
         {
             if(!watchOn)
             {
-                watch.setImageResource((R.drawable.watch_vibrate_2tmep));
+                watch.setImageResource((R.drawable.watch_vibrate_twotemp));
                 watchOn=true;
             }
             else
             {
-                watch.setImageResource((R.drawable.watch_vibrate_1temp));
+                watch.setImageResource((R.drawable.watch_vibrate_onetemp));
                 watchOn=false;
             }
 
@@ -169,12 +168,12 @@ public class MainActivity extends AppCompatActivity
         {
             if(!speechOn)
             {
-                speech.setImageResource(R.drawable.speak_2temp);
+                speech.setImageResource(R.drawable.speak_twotemp);
                 speechOn=true;
             }
             else
             {
-                speech.setImageResource(R.drawable.speak_1temp);
+                speech.setImageResource(R.drawable.speak_onetemp);
                 speechOn=false;
             }
         }
