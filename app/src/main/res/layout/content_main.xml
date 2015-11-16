@@ -29,7 +29,7 @@
             android:layout_weight="1"
             android:scaleType="fitCenter"
             android:background="@android:color/transparent"
-            android:src="@drawable/lightbulb_onetemp"
+
             android:id="@+id/light" />
 
         <ImageButton
@@ -38,7 +38,7 @@
             android:layout_weight="1"
             android:scaleType="fitCenter"
             android:background="@android:color/transparent"
-            android:src="@drawable/heart_onetemp"
+
             android:id="@+id/heart"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
@@ -61,7 +61,7 @@
             android:layout_weight="1"
             android:scaleType="fitCenter"
             android:background="@android:color/transparent"
-            android:src="@drawable/watch_onetemp"
+
             android:id="@+id/watch"
             android:layout_gravity="center_horizontal" />
 
@@ -71,7 +71,7 @@
             android:layout_weight="1"
             android:scaleType="fitCenter"
             android:background="@android:color/transparent"
-            android:src="@drawable/speak_onetemp"
+
             android:id="@+id/speech"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
@@ -92,7 +92,7 @@
             android:layout_height="150dp"
             android:layout_weight="1"
             android:scaleType="fitCenter"
-            android:src="@drawable/heart_twotemp"
+
             android:background="@android:color/transparent"
             android:id="@+id/imageButton5"
             android:layout_gravity="center_horizontal" />
@@ -102,7 +102,7 @@
             android:layout_height="150dp"
             android:layout_weight="1"
             android:scaleType="fitCenter"
-            android:src="@drawable/heart_twotemp"
+
             android:background="@android:color/transparent"
             android:id="@+id/imageButton6"
             android:layout_gravity="center_horizontal" />
