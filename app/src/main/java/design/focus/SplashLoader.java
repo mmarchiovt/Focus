@@ -51,6 +51,13 @@ public class SplashLoader extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
+
+
+
+
+
+//    Helpers
+
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
 

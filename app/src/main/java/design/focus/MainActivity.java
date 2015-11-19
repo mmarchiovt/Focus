@@ -1,5 +1,6 @@
 package design.focus;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity
     private ImageButton heart;
     private ImageButton watch;
     private ImageButton speech;
+    private ImageView icon;
 
     private boolean lightOn;
     private boolean heartOn;
@@ -50,10 +52,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        setTitle("Focus");
+
         lightbulb = (ImageButton) findViewById(R.id.light);
         heart = (ImageButton) findViewById(R.id.heart);
         watch = (ImageButton) findViewById(R.id.watch);
         speech = (ImageButton) findViewById(R.id.speech);
+
+        icon = (ImageView) findViewById(R.id.imageView);
 
         lightbulb.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, 100, 100));
@@ -102,8 +108,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_settings)
+        {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -200,6 +208,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
+
+    // Helpers
 
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
