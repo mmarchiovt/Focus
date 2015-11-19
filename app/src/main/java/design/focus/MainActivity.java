@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity
     private ImageButton speech;
     private ImageView icon;
 
+    private static final int RESOLUTION = 200;
+
     private boolean lightOn;
     private boolean heartOn;
     private boolean watchOn;
@@ -62,13 +64,13 @@ public class MainActivity extends AppCompatActivity
         icon = (ImageView) findViewById(R.id.imageView);
 
         lightbulb.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, 100, 100));
+                decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
         heart.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, 100, 100));
+                decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION));
         watch.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, 100, 100));
+                decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION));
         speech.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, 100, 100));
+                decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION));
 
         lightbulb.setOnClickListener(this);
         heart.setOnClickListener(this);
@@ -149,13 +151,13 @@ public class MainActivity extends AppCompatActivity
             if(!lightOn)
             {
                 lightbulb.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, 100, 100));
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
                 lightOn=true;
             }
             else
             {
                 lightbulb.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, 100, 100));
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, RESOLUTION, RESOLUTION));
                 lightOn=false;
             }
         }
@@ -164,13 +166,13 @@ public class MainActivity extends AppCompatActivity
             if(!heartOn)
             {
                 heart.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, 100, 100));
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION));
                 heartOn=true;
             }
             else
             {
                 heart.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, 100, 100));
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, RESOLUTION, RESOLUTION));
                 heartOn=false;
             }
         }
@@ -179,13 +181,13 @@ public class MainActivity extends AppCompatActivity
             if(!watchOn)
             {
                 watch.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, 100, 100));
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, RESOLUTION, RESOLUTION));
                 watchOn=true;
             }
             else
             {
                 watch.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, 100, 100));
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION));
                 watchOn=false;
             }
 
@@ -195,13 +197,13 @@ public class MainActivity extends AppCompatActivity
             if(!speechOn)
             {
                 speech.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, 100, 100));
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION));
                 speechOn=true;
             }
             else
             {
                 speech.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, 100, 100));
+                        decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, RESOLUTION, RESOLUTION));
                 speechOn=false;
             }
         }
