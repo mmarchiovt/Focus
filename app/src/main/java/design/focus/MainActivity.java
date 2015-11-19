@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity
     private ImageButton heart;
     private ImageButton watch;
     private ImageButton speech;
-    private ImageView icon;
 
     private static final int RESOLUTION = 200;
 
@@ -37,6 +36,10 @@ public class MainActivity extends AppCompatActivity
     private boolean heartOn;
     private boolean watchOn;
     private boolean speechOn;
+    private Bitmap lightbulbBM;
+    private Bitmap heartBM;
+    private Bitmap speakBM;
+    private Bitmap watchBM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,6 @@ public class MainActivity extends AppCompatActivity
         watch = (ImageButton) findViewById(R.id.watch);
         speech = (ImageButton) findViewById(R.id.speech);
 
-        icon = (ImageView) findViewById(R.id.imageView);
 
         lightbulb.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
@@ -71,6 +73,12 @@ public class MainActivity extends AppCompatActivity
                 decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION));
         speech.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION));
+
+
+       lightbulbBM = decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, RESOLUTION, RESOLUTION);
+       heartBM = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, RESOLUTION, RESOLUTION);
+       watchBM = decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, RESOLUTION, RESOLUTION);
+       speakBM = decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, RESOLUTION, RESOLUTION);
 
         lightbulb.setOnClickListener(this);
         heart.setOnClickListener(this);
@@ -150,8 +158,7 @@ public class MainActivity extends AppCompatActivity
         {
             if(!lightOn)
             {
-                lightbulb.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
+                lightbulb.setImageBitmap(lightbulbBM);
                 lightOn=true;
             }
             else
@@ -166,7 +173,7 @@ public class MainActivity extends AppCompatActivity
             if(!heartOn)
             {
                 heart.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION));
+                       heartBM);
                 heartOn=true;
             }
             else
@@ -181,7 +188,7 @@ public class MainActivity extends AppCompatActivity
             if(!watchOn)
             {
                 watch.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, RESOLUTION, RESOLUTION));
+                        watchBM);
                 watchOn=true;
             }
             else
@@ -197,7 +204,7 @@ public class MainActivity extends AppCompatActivity
             if(!speechOn)
             {
                 speech.setImageBitmap(
-                        decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION));
+                        speakBM);
                 speechOn=true;
             }
             else
