@@ -9,6 +9,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:permission="RECORD_AUDIO"
 
         >
         <activity

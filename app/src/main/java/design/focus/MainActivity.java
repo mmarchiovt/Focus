@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -21,6 +23,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.speech.SpeechRecognizer;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener
@@ -46,8 +51,10 @@ public class MainActivity extends AppCompatActivity
     private Bitmap speakBMOff;
     private Bitmap watchBMOff;
 
+    private SpeechRecognizer sr;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) 
+    protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -99,6 +106,8 @@ public class MainActivity extends AppCompatActivity
         heartOn = false;
         watchOn = false;
         speechOn = false;
+
+
 
     }
 
@@ -220,22 +229,37 @@ public class MainActivity extends AppCompatActivity
                 speech.setImageBitmap(
                         speakBMOn);
                 speechOn=true;
+
+                sr = SpeechRecognizer.createSpeechRecognizer(this);
+                sr.setRecognitionListener(new listener());
+
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"voice.recognition.test");
+
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,5);
+                sr.startListening(intent);
+
+
             }
             else
             {
                 speech.setImageBitmap(
                        speakBMOff);
                 speechOn=false;
+                sr.cancel();
+                //sr.stopListening();
+                sr.destroy();
             }
         }
     }
 
+
     // Helpers
 
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-                                                         int reqWidth, int reqHeight) 
+                                                         int reqWidth, int reqHeight)
     {
-
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -256,7 +280,7 @@ public class MainActivity extends AppCompatActivity
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > reqHeight || width > reqWidth) 
+        if (height > reqHeight || width > reqWidth)
         {
 
             final int halfHeight = height / 2;
@@ -265,7 +289,7 @@ public class MainActivity extends AppCompatActivity
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
             while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) 
+                    && (halfWidth / inSampleSize) > reqWidth)
             {
                 inSampleSize *= 2;
             }
@@ -274,6 +298,65 @@ public class MainActivity extends AppCompatActivity
         return inSampleSize;
     }
 
+    // inner listener class
 
+    private class listener implements RecognitionListener
+    {
+
+        @Override
+        public void onReadyForSpeech(Bundle params) {
+
+        }
+
+        @Override
+        public void onBeginningOfSpeech() {
+
+        }
+
+        @Override
+        public void onRmsChanged(float rmsdB) {
+
+        }
+
+        @Override
+        public void onBufferReceived(byte[] buffer) {
+
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+
+        }
+
+        @Override
+        public void onError(int error) {
+
+        }
+
+        @Override
+        public void onResults(Bundle results)
+        {
+            String str = new String();
+            //Log.d(TAG, "onResults " + results);
+            ArrayList data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            for (int i = 0; i < data.size(); i++)
+            {
+                str += data.get(i);
+            }
+
+            Toast toast = Toast.makeText(getApplicationContext(), String.valueOf(data.size()), Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+        @Override
+        public void onPartialResults(Bundle partialResults) {
+
+        }
+
+        @Override
+        public void onEvent(int eventType, Bundle params) {
+
+        }
+    }
 }
 
