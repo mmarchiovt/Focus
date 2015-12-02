@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.speech.SpeechRecognizer;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener
@@ -36,17 +37,18 @@ public class MainActivity extends AppCompatActivity
     private boolean heartOn;
     private boolean watchOn;
     private boolean speechOn;
-    private Bitmap lightbulbBMOn;
+    private Bitmap lightBMOn;
     private Bitmap heartBMOn;
     private Bitmap speakBMOn;
     private Bitmap watchBMOn;
-    private Bitmap lightbulbBMOff;
+    private Bitmap lightBMOff;
     private Bitmap heartBMOff;
     private Bitmap speakBMOff;
     private Bitmap watchBMOff;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) 
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -68,7 +70,6 @@ public class MainActivity extends AppCompatActivity
         watch = (ImageButton) findViewById(R.id.watch);
         speech = (ImageButton) findViewById(R.id.speech);
 
-
         lightbulb.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
         heart.setImageBitmap(
@@ -78,15 +79,15 @@ public class MainActivity extends AppCompatActivity
         speech.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION));
 
-        lightbulbBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION);
+        lightBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION);
         heartBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION);
         watchBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION);
         speakBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION);
 
-       lightbulbBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, RESOLUTION, RESOLUTION);
-       heartBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, RESOLUTION, RESOLUTION);
-       watchBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, RESOLUTION, RESOLUTION);
-       speakBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, RESOLUTION, RESOLUTION);
+        lightBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, RESOLUTION, RESOLUTION);
+        heartBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, RESOLUTION, RESOLUTION);
+        watchBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, RESOLUTION, RESOLUTION);
+        speakBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, RESOLUTION, RESOLUTION);
 
         lightbulb.setOnClickListener(this);
         heart.setOnClickListener(this);
@@ -102,7 +103,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -112,14 +114,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+      //  getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -137,21 +141,21 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item)
+    {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
+        if (id == R.id.phone_settings)
+        {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        }
+        else if (id == R.id.wearable_settings)
+        {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        }
+        else if (id == R.id.speech_Settings)
+        {
 
         }
 
@@ -166,13 +170,13 @@ public class MainActivity extends AppCompatActivity
         {
             if(!lightOn)
             {
-                lightbulb.setImageBitmap(lightbulbBMOn);
+                lightbulb.setImageBitmap(lightBMOn);
                 lightOn=true;
             }
             else
             {
                 lightbulb.setImageBitmap(
-                        lightbulbBMOff);
+                        lightBMOff);
                 lightOn=false;
             }
         }
@@ -191,6 +195,7 @@ public class MainActivity extends AppCompatActivity
                 heartOn=false;
             }
         }
+
         if(v.getId() == R.id.watch)
         {
             if(!watchOn)
@@ -207,6 +212,7 @@ public class MainActivity extends AppCompatActivity
             }
 
         }
+
         if(v.getId() == R.id.speech)
         {
             if(!speechOn)
@@ -224,13 +230,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
-
-
     // Helpers
 
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-                                                         int reqWidth, int reqHeight) {
+                                                         int reqWidth, int reqHeight) 
+    {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -245,14 +249,15 @@ public class MainActivity extends AppCompatActivity
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
+    {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > reqHeight || width > reqWidth) {
+        if (height > reqHeight || width > reqWidth) 
+        {
 
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
@@ -260,7 +265,8 @@ public class MainActivity extends AppCompatActivity
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
             while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
+                    && (halfWidth / inSampleSize) > reqWidth) 
+            {
                 inSampleSize *= 2;
             }
         }
@@ -268,4 +274,6 @@ public class MainActivity extends AppCompatActivity
         return inSampleSize;
     }
 
+
 }
+
