@@ -6,23 +6,29 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
 
-public class SplashLoader extends AppCompatActivity implements View.OnClickListener {
+public class SplashLoader extends AppCompatActivity {
 
     private Button loadingBar;
     private ImageView icon;
+    private LinearLayout layout;
+    protected boolean first;
 
-    protected void onCreate(Bundle savedInstanceState) {
-
+    protected void onCreate(Bundle savedInstanceState)
+    {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_loader);
@@ -33,25 +39,54 @@ public class SplashLoader extends AppCompatActivity implements View.OnClickListe
         icon.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.icon, 100, 100));
 
-        loadingBar = (Button) findViewById(R.id.progressBar);
-        loadingBar.setOnClickListener(this);
+        layout = (LinearLayout) findViewById(R.id.splash);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchToMain();
+            }
 
-    }
+        });
 
-    public void onClick(View v) {
-        if (v.getId() == R.id.progressBar)
+        Bundle extras = getIntent().getExtras();
+        if (extras == null)
         {
-            switchToMain();
+            first =  false;
+            timerToMain();
         }
+        else
+        {
+            WindowManager.LayoutParams layout = getWindow().getAttributes();
+            layout.screenBrightness = 1F;
+            getWindow().setAttributes(layout);
+
+        }
+
     }
+
+    private void timerToMain()
+    {
+        new CountDownTimer(2000, 1000) {
+
+            public void onTick(long millisUntilFinished)
+            {
+
+            }
+
+            public void onFinish()
+            {
+               switchToMain();
+            }
+        }.start();
+    }
+
 
     private void switchToMain()
     {
+        first = true;
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
-
 
 
 //    Helpers

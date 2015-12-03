@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity
     private Bitmap watchBMOff;
 
     private SpeechRecognizer sr;
+
+    private float auto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -107,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         watchOn = false;
         speechOn = false;
 
-
+        auto = getWindow().getAttributes().screenBrightness;
 
     }
 
@@ -181,12 +185,21 @@ public class MainActivity extends AppCompatActivity
             {
                 lightbulb.setImageBitmap(lightBMOn);
                 lightOn=true;
+
+                Intent intent = new Intent(this, SplashLoader.class);
+                intent.putExtra("from main", true);
+                startActivity(intent);
             }
             else
             {
                 lightbulb.setImageBitmap(
                         lightBMOff);
                 lightOn=false;
+
+                WindowManager.LayoutParams layout = getWindow().getAttributes();
+                layout.screenBrightness = auto;
+                getWindow().setAttributes(layout);
+
             }
         }
         if(v.getId() == R.id.heart)
@@ -346,6 +359,9 @@ public class MainActivity extends AppCompatActivity
 
             Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
             toast.show();
+
+
+
         }
 
         @Override
@@ -358,5 +374,6 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
+
 }
 
