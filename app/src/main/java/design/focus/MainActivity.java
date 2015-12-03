@@ -337,14 +337,14 @@ public class MainActivity extends AppCompatActivity
         public void onResults(Bundle results)
         {
             String str = new String();
-            //Log.d(TAG, "onResults " + results);
             ArrayList data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            System.out.println(data);
             for (int i = 0; i < data.size(); i++)
             {
                 str += data.get(i);
             }
 
-            Toast toast = Toast.makeText(getApplicationContext(), String.valueOf(data.size()), Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
             toast.show();
         }
 
