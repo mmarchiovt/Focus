@@ -29,17 +29,28 @@ public class SplashLoader extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState)
     {
+        Bundle extras = getIntent().getExtras();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_loader);
+
+        if(extras != null && extras.getBoolean("from main"))
+        {
+            setContentView(R.layout.blue);
+            layout = (LinearLayout) findViewById(R.id.blue);
+        }
+        else
+        {
+            setContentView(R.layout.activity_splash_loader);
+            icon = (ImageView) findViewById(R.id.icon);
+            icon.setImageBitmap(
+                    decodeSampledBitmapFromResource(getResources(), R.drawable.icon, 100, 100));
+            layout = (LinearLayout) findViewById(R.id.splash);
+        }
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        icon = (ImageView) findViewById(R.id.icon);
-        icon.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.icon, 100, 100));
 
-        layout = (LinearLayout) findViewById(R.id.splash);
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,7 +59,6 @@ public class SplashLoader extends AppCompatActivity {
 
         });
 
-        Bundle extras = getIntent().getExtras();
         if (extras == null)
         {
             first =  false;
