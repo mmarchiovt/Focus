@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
+import android.os.Vibrator;
 
 public class MainActivity extends Activity {
 
@@ -21,4 +22,7 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
 }

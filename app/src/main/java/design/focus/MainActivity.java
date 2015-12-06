@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -26,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.speech.SpeechRecognizer;
 import android.widget.Toast;
+import android.graphics.Canvas;
 
 import java.util.ArrayList;
 
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     private Bitmap heartBMOff;
     private Bitmap speakBMOff;
     private Bitmap watchBMOff;
+    private static DrawerLayout drawer = null;
 
     private SpeechRecognizer sr;
 
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity
         //heart = (ImageButton) findViewById(R.id.heart);
         watch = (ImageButton) findViewById(R.id.watch);
         speech = (ImageButton) findViewById(R.id.speech);
+
 
         lightbulb.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
@@ -118,7 +122,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -172,7 +176,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -186,14 +190,14 @@ public class MainActivity extends AppCompatActivity
                 lightbulb.setImageBitmap(lightBMOn);
                 lightOn=true;
 
+                drawer.setVisibility(View.INVISIBLE);
                 Intent intent = new Intent(this, SplashLoader.class);
                 intent.putExtra("from main", true);
                 startActivity(intent);
             }
             else
             {
-                lightbulb.setImageBitmap(
-                        lightBMOff);
+                lightbulb.setImageBitmap(lightBMOff);
                 lightOn=false;
 
                 WindowManager.LayoutParams layout = getWindow().getAttributes();
@@ -222,14 +226,13 @@ public class MainActivity extends AppCompatActivity
         {
             if(!watchOn)
             {
-                watch.setImageBitmap(
-                        watchBMOn);
+                watch.setImageBitmap(watchBMOn);
                 watchOn=true;
+
             }
             else
             {
-                watch.setImageBitmap(
-                        watchBMOff);
+                watch.setImageBitmap(watchBMOff);
                 watchOn=false;
             }
 
