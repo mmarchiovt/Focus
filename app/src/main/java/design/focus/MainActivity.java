@@ -1,17 +1,13 @@
 package design.focus;
 
+import android.app.AlarmManager;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,13 +18,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.speech.SpeechRecognizer;
 import android.widget.Toast;
-import android.graphics.Canvas;
 
+import java.util.Date;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
@@ -54,7 +48,6 @@ public class MainActivity extends AppCompatActivity
     private Bitmap heartBMOff;
     private Bitmap speakBMOff;
     private Bitmap watchBMOff;
-    private static DrawerLayout drawer = null;
 
     private SpeechRecognizer sr;
 
@@ -68,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -84,25 +77,24 @@ public class MainActivity extends AppCompatActivity
         watch = (ImageButton) findViewById(R.id.watch);
         speech = (ImageButton) findViewById(R.id.speech);
 
-
         lightbulb.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
+                BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
 //        heart.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION));
+//                BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION));
         watch.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION));
+                BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION));
         speech.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION));
+                BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION));
 
-        lightBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION);
-       // heartBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION);
-        watchBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION);
-        speakBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION);
+        lightBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION);
+       // heartBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION);
+        watchBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION);
+        speakBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION);
 
-        lightBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, RESOLUTION, RESOLUTION);
-      //  heartBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, RESOLUTION, RESOLUTION);
-        watchBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, RESOLUTION, RESOLUTION);
-        speakBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, RESOLUTION, RESOLUTION);
+        lightBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, RESOLUTION, RESOLUTION);
+      //  heartBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, RESOLUTION, RESOLUTION);
+        watchBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, RESOLUTION, RESOLUTION);
+        speakBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, RESOLUTION, RESOLUTION);
 
         lightbulb.setOnClickListener(this);
        // heart.setOnClickListener(this);
@@ -122,7 +114,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -165,7 +157,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.phone_settings)
         {
-            // Handle the camera action
+
         }
         else if (id == R.id.wearable_settings)
         {
@@ -176,7 +168,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -190,14 +182,14 @@ public class MainActivity extends AppCompatActivity
                 lightbulb.setImageBitmap(lightBMOn);
                 lightOn=true;
 
-                drawer.setVisibility(View.INVISIBLE);
                 Intent intent = new Intent(this, SplashLoader.class);
                 intent.putExtra("from main", true);
                 startActivity(intent);
             }
             else
             {
-                lightbulb.setImageBitmap(lightBMOff);
+                lightbulb.setImageBitmap(
+                        lightBMOff);
                 lightOn=false;
 
                 WindowManager.LayoutParams layout = getWindow().getAttributes();
@@ -226,13 +218,20 @@ public class MainActivity extends AppCompatActivity
         {
             if(!watchOn)
             {
-                watch.setImageBitmap(watchBMOn);
+                watch.setImageBitmap(
+                        watchBMOn);
                 watchOn=true;
+
+                long time = System.currentTimeMillis();
+                Date resultdate = new Date(time);
+                Toast toast = Toast.makeText(getApplicationContext(), resultdate.toString(), Toast.LENGTH_LONG);
+                toast.show();
 
             }
             else
             {
-                watch.setImageBitmap(watchBMOff);
+                watch.setImageBitmap(
+                        watchBMOff);
                 watchOn=false;
             }
 
@@ -264,55 +263,54 @@ public class MainActivity extends AppCompatActivity
                        speakBMOff);
                 speechOn=false;
                 sr.cancel();
-                //sr.stopListening();
                 sr.destroy();
             }
         }
     }
 
 
-    // Helpers
-
-    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-                                                         int reqWidth, int reqHeight)
-    {
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
-    {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth)
-        {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth)
-            {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
+//    // Helpers
+//
+//    public static Bitmap BitmapHelper.decodeSampledBitmapFromResource(Resources res, int resId,
+//                                                         int reqWidth, int reqHeight)
+//    {
+//        // First decode with inJustDecodeBounds=true to check dimensions
+//        final BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inJustDecodeBounds = true;
+//        BitmapFactory.decodeResource(res, resId, options);
+//
+//        // Calculate inSampleSize
+//        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+//
+//        // Decode bitmap with inSampleSize set
+//        options.inJustDecodeBounds = false;
+//        return BitmapFactory.decodeResource(res, resId, options);
+//    }
+//
+//    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
+//    {
+//        // Raw height and width of image
+//        final int height = options.outHeight;
+//        final int width = options.outWidth;
+//        int inSampleSize = 1;
+//
+//        if (height > reqHeight || width > reqWidth)
+//        {
+//
+//            final int halfHeight = height / 2;
+//            final int halfWidth = width / 2;
+//
+//            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+//            // height and width larger than the requested height and width.
+//            while ((halfHeight / inSampleSize) > reqHeight
+//                    && (halfWidth / inSampleSize) > reqWidth)
+//            {
+//                inSampleSize *= 2;
+//            }
+//        }
+//
+//        return inSampleSize;
+//    }
 
     // inner listener class
 
@@ -363,8 +361,6 @@ public class MainActivity extends AppCompatActivity
             Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
             toast.show();
 
-
-
         }
 
         @Override
@@ -377,6 +373,8 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
+
+
 
 }
 
