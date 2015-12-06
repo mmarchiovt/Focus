@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity
     private ImageButton stop;
 
     private static final int RESOLUTION = 200;
-    private static final int RESOLUTION2 = 100;
 
     private boolean lightOn;
     private boolean watchOn;
@@ -66,6 +65,11 @@ public class MainActivity extends AppCompatActivity
     private AlarmManagerBroadcastReceiver alarm;
 
     private TextToSpeech t1;
+
+    private Date startTime;
+    private Date endTime;
+    private Date pauseTime;
+    private int pauseAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -134,12 +138,15 @@ public class MainActivity extends AppCompatActivity
         auto = getWindow().getAttributes().screenBrightness;
 
         t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
+
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
+                if(status != TextToSpeech.ERROR)
+                {
                     t1.setLanguage(Locale.US);
                 }
             }
+
+
         });
 
     }
@@ -240,18 +247,6 @@ public class MainActivity extends AppCompatActivity
                         watchBMOn);
                 watchOn=true;
 
-                long time = System.currentTimeMillis();
-                Date resultdate = new Date(time);
-                Toast toast = Toast.makeText(getApplicationContext(), resultdate.toString(), Toast.LENGTH_LONG);
-                toast.show();
-
-                Context context = this.getApplicationContext();
-                if(alarm != null){
-                    alarm.setOnetimeTimer(context);
-                }else{
-                    Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
-                }
-
             }
             else
             {
@@ -270,16 +265,23 @@ public class MainActivity extends AppCompatActivity
                         speakBMOn);
                 speechOn=true;
 
-                sr = SpeechRecognizer.createSpeechRecognizer(this);
-                sr.setRecognitionListener(new listener());
+                t1.speak("Question? Where do fish keep their money?", TextToSpeech.QUEUE_FLUSH, null);
 
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"voice.recognition.test");
+                //noinspection StatementWithEmptyBody
+                while(t1.isSpeaking())
+                {
+                    //waits till speech is done
+                }
 
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
-                sr.startListening(intent);
+                    sr = SpeechRecognizer.createSpeechRecognizer(this);
+                    sr.setRecognitionListener(new listener());
 
+                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, "voice.recognition.test");
+
+                    intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+                    sr.startListening(intent);
 
             }
             else
@@ -300,12 +302,22 @@ public class MainActivity extends AppCompatActivity
                         playBMOn);
                 playOn=true;
 
+                long time = System.currentTimeMillis();
+                 startTime = new Date(time);
+                System.out.println(startTime.getHours() + ":" + startTime.getMinutes());
             }
             else
             {
                 play.setImageBitmap(
                         playBMOff);
                 playOn=false;
+
+                long time = System.currentTimeMillis();
+                endTime = new Date(time);
+                System.out.println(endTime.getHours()+":"+endTime.getMinutes());
+                int hour = startTime.getHours()-endTime.getHours();
+                int min = endTime.getMinutes()-startTime.getMinutes();
+                System.out.println(hour+":"+min);
             }
         }
 
@@ -375,30 +387,27 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public void onError(int error) {
-
+        public void onError(int error)
+        {
+            t1.speak("are you too stupid to answer?", TextToSpeech.QUEUE_FLUSH, null);
         }
 
         @Override
         public void onResults(Bundle results)
         {
-            String str = new String();
             ArrayList data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             System.out.println(data);
-            for (int i = 0; i < data.size(); i++)
-            {
-                str += data.get(i);
-            }
 
-            Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
-            toast.show();
+                Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
+                toast.show();
 
-            t1.speak(data.get(0).toString(), TextToSpeech.QUEUE_FLUSH, null);
+                t1.speak("Wrong! Fish keep their money in the river bank", TextToSpeech.QUEUE_FLUSH, null);
 
         }
 
         @Override
-        public void onPartialResults(Bundle partialResults) {
+        public void onPartialResults(Bundle partialResults)
+        {
 
         }
 
