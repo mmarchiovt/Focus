@@ -77,37 +77,37 @@ public class MainActivity extends AppCompatActivity
         setTitle("Focus");
 
         lightbulb = (ImageButton) findViewById(R.id.light);
-        heart = (ImageButton) findViewById(R.id.heart);
+        //heart = (ImageButton) findViewById(R.id.heart);
         watch = (ImageButton) findViewById(R.id.watch);
         speech = (ImageButton) findViewById(R.id.speech);
 
         lightbulb.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
-        heart.setImageBitmap(
-                decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION));
+//        heart.setImageBitmap(
+//                decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION));
         watch.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION));
         speech.setImageBitmap(
                 decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION));
 
         lightBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION);
-        heartBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION);
+       // heartBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION);
         watchBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION);
         speakBMOff = decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION);
 
         lightBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, RESOLUTION, RESOLUTION);
-        heartBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, RESOLUTION, RESOLUTION);
+      //  heartBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, RESOLUTION, RESOLUTION);
         watchBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, RESOLUTION, RESOLUTION);
         speakBMOn = decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, RESOLUTION, RESOLUTION);
 
         lightbulb.setOnClickListener(this);
-        heart.setOnClickListener(this);
+       // heart.setOnClickListener(this);
         watch.setOnClickListener(this);
         speech.setOnClickListener(this);
 
         //temp
         lightOn = false;
-        heartOn = false;
+        //heartOn = false;
         watchOn = false;
         speechOn = false;
 
@@ -202,21 +202,21 @@ public class MainActivity extends AppCompatActivity
 
             }
         }
-        if(v.getId() == R.id.heart)
-        {
-            if(!heartOn)
-            {
-                heart.setImageBitmap(
-                       heartBMOn);
-                heartOn=true;
-            }
-            else
-            {
-                heart.setImageBitmap(
-                        heartBMOff);
-                heartOn=false;
-            }
-        }
+//        if(v.getId() == R.id.heart)
+//        {
+//            if(!heartOn)
+//            {
+//                heart.setImageBitmap(
+//                       heartBMOn);
+//                heartOn=true;
+//            }
+//            else
+//            {
+//                heart.setImageBitmap(
+//                        heartBMOff);
+//                heartOn=false;
+//            }
+//        }
 
         if(v.getId() == R.id.watch)
         {
