@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.speech.SpeechRecognizer;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity
     private Bitmap stopBMOff;
 
     private static DrawerLayout drawer = null;
+    private static LinearLayout blue = null;
 
     private SpeechRecognizer sr;
 
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        blue = (LinearLayout) findViewById(R.id.blue);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -219,15 +222,20 @@ public class MainActivity extends AppCompatActivity
 
                 drawer.setVisibility(View.INVISIBLE);
 
+                setContentView(R.layout.blue);
+//                layout = (LinearLayout) findViewById(R.id.blue);
+
                 Intent intent = new Intent(this, SplashLoader.class);
                 intent.putExtra("from main", true);
                 startActivity(intent);
             }
             else
             {
-                lightbulb.setImageBitmap(
-                        lightBMOff);
+                lightbulb.setImageBitmap(lightBMOff);
                 lightOn=false;
+
+                drawer.setVisibility(View.VISIBLE);
+
 
                 WindowManager.LayoutParams layout = getWindow().getAttributes();
                 layout.screenBrightness = auto;
