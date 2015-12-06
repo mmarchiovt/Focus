@@ -1,13 +1,12 @@
 package design.focus;
 
-import android.app.AlarmManager;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,34 +23,49 @@ import android.widget.Toast;
 
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener
 {
 
     private ImageButton lightbulb;
-    private ImageButton heart;
     private ImageButton watch;
     private ImageButton speech;
+    private ImageButton play;
+    private ImageButton pause;
+    private ImageButton stop;
 
     private static final int RESOLUTION = 200;
+    private static final int RESOLUTION2 = 100;
 
     private boolean lightOn;
-    private boolean heartOn;
     private boolean watchOn;
     private boolean speechOn;
+    private boolean playOn;
+    private boolean pauseOn;
+    private boolean stopOn;
+
     private Bitmap lightBMOn;
-    private Bitmap heartBMOn;
     private Bitmap speakBMOn;
     private Bitmap watchBMOn;
+    private Bitmap playBMOn;
+    private Bitmap pauseBMOn;
+    private Bitmap stopBMOn;
     private Bitmap lightBMOff;
-    private Bitmap heartBMOff;
     private Bitmap speakBMOff;
     private Bitmap watchBMOff;
+    private Bitmap playBMOff;
+    private Bitmap pauseBMOff;
+    private Bitmap stopBMOff;
 
     private SpeechRecognizer sr;
 
     private float auto;
+
+    private AlarmManagerBroadcastReceiver alarm;
+
+    private TextToSpeech t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -72,42 +86,61 @@ public class MainActivity extends AppCompatActivity
 
         setTitle("Focus");
 
+        alarm = new AlarmManagerBroadcastReceiver();
+
         lightbulb = (ImageButton) findViewById(R.id.light);
-        //heart = (ImageButton) findViewById(R.id.heart);
         watch = (ImageButton) findViewById(R.id.watch);
         speech = (ImageButton) findViewById(R.id.speech);
-
-        lightbulb.setImageBitmap(
-                BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION));
-//        heart.setImageBitmap(
-//                BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION));
-        watch.setImageBitmap(
-                BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION));
-        speech.setImageBitmap(
-                BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION));
+        play = (ImageButton) findViewById(R.id.play);
+        pause = (ImageButton) findViewById(R.id.pause);
+        stop = (ImageButton) findViewById(R.id.stop);
 
         lightBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_onetemp, RESOLUTION, RESOLUTION);
-       // heartBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.heart_onetemp, RESOLUTION, RESOLUTION);
         watchBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.watch_onetemp, RESOLUTION, RESOLUTION);
         speakBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.speak_onetemp, RESOLUTION, RESOLUTION);
+        playBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.play_off, RESOLUTION, RESOLUTION);
+        pauseBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.pause_off, RESOLUTION, RESOLUTION);
+        stopBMOff = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.finish_off, RESOLUTION, RESOLUTION);
 
         lightBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.lightbulb_twotemp, RESOLUTION, RESOLUTION);
-      //  heartBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.heart_twotemp, RESOLUTION, RESOLUTION);
         watchBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.watch_vibrate_twotemp, RESOLUTION, RESOLUTION);
         speakBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.speak_twotemp, RESOLUTION, RESOLUTION);
+        playBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.play_on, RESOLUTION, RESOLUTION);
+        pauseBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.pause_on, RESOLUTION, RESOLUTION);
+        stopBMOn = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.finish_on, RESOLUTION, RESOLUTION);
+
+        lightbulb.setImageBitmap(lightBMOff);
+        watch.setImageBitmap(watchBMOff);
+        speech.setImageBitmap(speakBMOff);
+        play.setImageBitmap(playBMOff);
+        pause.setImageBitmap(pauseBMOff);
+        stop.setImageBitmap(stopBMOff);
 
         lightbulb.setOnClickListener(this);
-       // heart.setOnClickListener(this);
         watch.setOnClickListener(this);
         speech.setOnClickListener(this);
+        play.setOnClickListener(this);
+        pause.setOnClickListener(this);
+        stop.setOnClickListener(this);
 
         //temp
         lightOn = false;
-        //heartOn = false;
         watchOn = false;
         speechOn = false;
+        playOn = false;
+        pauseOn = false;
+        stopOn = false;
 
         auto = getWindow().getAttributes().screenBrightness;
+
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    t1.setLanguage(Locale.US);
+                }
+            }
+        });
 
     }
 
@@ -198,21 +231,6 @@ public class MainActivity extends AppCompatActivity
 
             }
         }
-//        if(v.getId() == R.id.heart)
-//        {
-//            if(!heartOn)
-//            {
-//                heart.setImageBitmap(
-//                       heartBMOn);
-//                heartOn=true;
-//            }
-//            else
-//            {
-//                heart.setImageBitmap(
-//                        heartBMOff);
-//                heartOn=false;
-//            }
-//        }
 
         if(v.getId() == R.id.watch)
         {
@@ -226,6 +244,13 @@ public class MainActivity extends AppCompatActivity
                 Date resultdate = new Date(time);
                 Toast toast = Toast.makeText(getApplicationContext(), resultdate.toString(), Toast.LENGTH_LONG);
                 toast.show();
+
+                Context context = this.getApplicationContext();
+                if(alarm != null){
+                    alarm.setOnetimeTimer(context);
+                }else{
+                    Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
+                }
 
             }
             else
@@ -252,7 +277,7 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"voice.recognition.test");
 
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,5);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
                 sr.startListening(intent);
 
 
@@ -266,51 +291,58 @@ public class MainActivity extends AppCompatActivity
                 sr.destroy();
             }
         }
+
+        if(v.getId() == R.id.play)
+        {
+            if(!playOn)
+            {
+                play.setImageBitmap(
+                        playBMOn);
+                playOn=true;
+
+            }
+            else
+            {
+                play.setImageBitmap(
+                        playBMOff);
+                playOn=false;
+            }
+        }
+
+        if(v.getId() == R.id.pause)
+        {
+            if(!pauseOn)
+            {
+                pause.setImageBitmap(
+                        pauseBMOn);
+                pauseOn=true;
+
+            }
+            else
+            {
+                pause.setImageBitmap(
+                        pauseBMOff);
+                pauseOn=false;
+            }
+        }
+
+        if(v.getId() == R.id.stop)
+        {
+            if(!stopOn)
+            {
+                stop.setImageBitmap(
+                        stopBMOn);
+                stopOn=true;
+
+            }
+            else
+            {
+                stop.setImageBitmap(
+                        stopBMOff);
+                stopOn=false;
+            }
+        }
     }
-
-
-//    // Helpers
-//
-//    public static Bitmap BitmapHelper.decodeSampledBitmapFromResource(Resources res, int resId,
-//                                                         int reqWidth, int reqHeight)
-//    {
-//        // First decode with inJustDecodeBounds=true to check dimensions
-//        final BitmapFactory.Options options = new BitmapFactory.Options();
-//        options.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(res, resId, options);
-//
-//        // Calculate inSampleSize
-//        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-//
-//        // Decode bitmap with inSampleSize set
-//        options.inJustDecodeBounds = false;
-//        return BitmapFactory.decodeResource(res, resId, options);
-//    }
-//
-//    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
-//    {
-//        // Raw height and width of image
-//        final int height = options.outHeight;
-//        final int width = options.outWidth;
-//        int inSampleSize = 1;
-//
-//        if (height > reqHeight || width > reqWidth)
-//        {
-//
-//            final int halfHeight = height / 2;
-//            final int halfWidth = width / 2;
-//
-//            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-//            // height and width larger than the requested height and width.
-//            while ((halfHeight / inSampleSize) > reqHeight
-//                    && (halfWidth / inSampleSize) > reqWidth)
-//            {
-//                inSampleSize *= 2;
-//            }
-//        }
-//
-//        return inSampleSize;
-//    }
 
     // inner listener class
 
@@ -360,6 +392,8 @@ public class MainActivity extends AppCompatActivity
 
             Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
             toast.show();
+
+            t1.speak(data.get(0).toString(), TextToSpeech.QUEUE_FLUSH, null);
 
         }
 

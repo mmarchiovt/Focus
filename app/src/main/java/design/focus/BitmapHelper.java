@@ -4,9 +4,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-/**
- * Created by Marchio on 12/6/15.
- */
 public class BitmapHelper
 {
     // Helpers
