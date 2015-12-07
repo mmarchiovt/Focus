@@ -207,17 +207,19 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.phone_settings)
+        if (id == R.id.share)
         {
 
         }
-        else if (id == R.id.wearable_settings)
+        else if (id == R.id.stats)
         {
 
         }
-        else if (id == R.id.speech_Settings)
+        else if (id == R.id.settings)
         {
-
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtra("from main", true);
+            startActivity(intent);
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

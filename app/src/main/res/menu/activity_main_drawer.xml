@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item android:id="@+id/phone_settings" android:icon="@android:drawable/ic_menu_call"
-            android:title="Phone Settings" />
-        <item android:id="@+id/wearable_settings" android:icon="@android:drawable/ic_menu_preferences"
-            android:title="Wearable Settings" />
-        <item android:id="@+id/speech_Settings" android:icon="@android:drawable/ic_menu_edit"
-            android:title="Speech Settings" />
-    </group>
-
-    <item android:title="Communicate">
+    <item android:title="Menu">
         <menu>
-            <item android:id="@+id/nav_share" android:icon="@android:drawable/ic_menu_sort_by_size"
+            <item android:id="@+id/stats" android:icon="@android:drawable/ic_menu_sort_by_size"
                 android:title="Statistics" />
-            <item android:id="@+id/nav_send" android:icon="@android:drawable/ic_menu_share"
+            <item android:id="@+id/share" android:icon="@android:drawable/ic_menu_share"
                 android:title="Share" />
+            <item android:id="@+id/settings" android:icon="@android:drawable/ic_menu_edit"
+                android:title="Settings" />
         </menu>
     </item>
 

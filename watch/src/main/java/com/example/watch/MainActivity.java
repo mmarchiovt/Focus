@@ -9,30 +9,20 @@ import android.widget.TextView;
 import android.os.Vibrator;
 import android.content.Context;
 
+
 public class MainActivity extends Activity {
 
     private TextView mTextView;
-    private Vibrator v;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        ImageButton lightbulb = (ImageButton) findViewById(R.id.light);
 
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
-            }
-        });
-
-        lightbulb.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                v.vibrate(2000);
                 mTextView = (TextView) stub.findViewById(R.id.text);
             }
         });
