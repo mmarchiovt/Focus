@@ -27,8 +27,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener
-{
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private ImageButton lightbulb;
     private ImageButton watch;
@@ -79,8 +78,7 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Date> PauseTimes;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -150,10 +148,8 @@ public class MainActivity extends AppCompatActivity
 
         t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
-            public void onInit(int status)
-            {
-                if(status != TextToSpeech.ERROR)
-                {
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
                     t1.setLanguage(Locale.US);
                 }
             }
@@ -162,8 +158,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -173,24 +168,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-      //  getMenuInflater().inflate(R.menu.main, menu);
+        //  getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
-        {
+        if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         }
@@ -200,21 +192,15 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item)
-    {
+    public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.share)
-        {
+        if (id == R.id.share) {
 
-        }
-        else if (id == R.id.stats)
-        {
+        } else if (id == R.id.stats) {
 
-        }
-        else if (id == R.id.settings)
-        {
+        } else if (id == R.id.settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             intent.putExtra("from main", true);
             startActivity(intent);
@@ -225,14 +211,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void onClick(View v)
-    {
-        if(v.getId() == R.id.light)
-        {
-            if(!lightOn)
-            {
+    public void onClick(View v) {
+        if (v.getId() == R.id.light) {
+            if (!lightOn) {
                 lightbulb.setImageBitmap(lightBMOn);
-                lightOn=true;
+                lightOn = true;
 
                 drawer.setVisibility(View.INVISIBLE);
 
@@ -241,11 +224,9 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(this, SplashLoader.class);
                 intent.putExtra("from main", true);
                 startActivity(intent);
-            }
-            else
-            {
+            } else {
                 lightbulb.setImageBitmap(lightBMOff);
-                lightOn=false;
+                lightOn = false;
 
                 drawer.setVisibility(View.VISIBLE);
 
@@ -257,13 +238,11 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        if(v.getId() == R.id.watch)
-        {
-            if(!watchOn)
-            {
+        if (v.getId() == R.id.watch) {
+            if (!watchOn) {
                 watch.setImageBitmap(
                         watchBMOn);
-                watchOn=true;
+                watchOn = true;
 
                 long time = System.currentTimeMillis();
                 Date resultdate = new Date(time);
@@ -271,35 +250,30 @@ public class MainActivity extends AppCompatActivity
                 toast.show();
 
                 Context context = this.getApplicationContext();
-                if(alarm != null){
+                if (alarm != null) {
                     alarm.setOnetimeTimer(context);
-                }else{
+                } else {
                     Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
                 }
 
-            }
-            else
-            {
+            } else {
                 watch.setImageBitmap(
                         watchBMOff);
-                watchOn=false;
+                watchOn = false;
             }
 
         }
 
-        if(v.getId() == R.id.speech)
-        {
-            if(!speechOn)
-            {
+        if (v.getId() == R.id.speech) {
+            if (!speechOn) {
                 speech.setImageBitmap(
                         speakBMOn);
-                speechOn=true;
+                speechOn = true;
 
-                t1.speak("Question:",TextToSpeech.QUEUE_FLUSH, null);
+                t1.speak("Question:", TextToSpeech.QUEUE_FLUSH, null);
 
                 //noinspection StatementWithEmptyBody
-                while(t1.isSpeaking())
-                {
+                while (t1.isSpeaking()) {
                     //Does Nothing
                 }
 
@@ -308,33 +282,28 @@ public class MainActivity extends AppCompatActivity
 
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"voice.recognition.test");
+                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, "voice.recognition.test");
 
                 intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
                 sr.startListening(intent);
 
-
-            }
-            else
-            {
+            } else {
                 speech.setImageBitmap(
-                       speakBMOff);
-                speechOn=false;
+                        speakBMOff);
+                speechOn = false;
                 sr.cancel();
                 sr.destroy();
             }
         }
 
-        if(v.getId() == R.id.play)
-        {
-            if(!playOn)
-            {
+        if (v.getId() == R.id.play) {
+            if (!playOn) {
                 play.setImageBitmap(
                         playBMOn);
-                playOn=true;
+                playOn = true;
 
                 stop.setImageBitmap(stopBMOn);
-                stopOn=true;
+                stopOn = true;
 
                 long time = System.currentTimeMillis();
                 startTime = new Date(time);
@@ -345,63 +314,57 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        if(v.getId() == R.id.pause)
-        {
-            if(!pauseOn && playOn)
-            {
+        if (v.getId() == R.id.pause) {
+            if (!pauseOn && playOn) {
                 pause.setImageBitmap(
                         pauseBMOn);
-                pauseOn=true;
+                pauseOn = true;
 
                 stop.setImageBitmap(stopBMOff);
-                stopOn=false;
+                stopOn = false;
 
                 long time = System.currentTimeMillis();
-                pauseStart= new Date(time);
+                pauseStart = new Date(time);
                 PauseTimes.add(pauseStart);
-            }
-            else {
+            } else {
                 pause.setImageBitmap(
                         pauseBMOff);
                 pauseOn = false;
 
                 stop.setImageBitmap(stopBMOn);
-                stopOn=true;
+                stopOn = true;
 
                 long time = System.currentTimeMillis();
                 pauseEnd = new Date(time);
 
                 PauseTimes.add(pauseEnd);
 
-                for (int i = 0; i < PauseTimes.size() / 2; i++)
-                {
-                    long temp = PauseTimes.get(i+1).getSeconds() - PauseTimes.get(i).getSeconds();
+                for (int i = 0; i < PauseTimes.size() / 2; i++) {
+                    long temp = PauseTimes.get(i + 1).getSeconds() - PauseTimes.get(i).getSeconds();
                     System.out.println(temp);
                 }
             }
         }
 
-        if(v.getId() == R.id.stop)
-        {
-            if(stopOn && !pauseOn)
-            {
+        if (v.getId() == R.id.stop) {
+            if (stopOn && !pauseOn) {
 
                 play.setImageBitmap(
                         playBMOff);
-                playOn=false;
+                playOn = false;
 
                 long time = System.currentTimeMillis();
                 endTime = new Date(time);
 
-                long hour = endTime.getHours()-startTime.getHours();
-                long min = endTime.getMinutes()-startTime.getMinutes();
-                long sec = endTime.getSeconds()-startTime.getSeconds();
-                Toast toast = Toast.makeText(getApplicationContext(),hour+" hours and "+min+" minutes and "+sec+" seconds", Toast.LENGTH_LONG);
+                long hour = endTime.getHours() - startTime.getHours();
+                long min = endTime.getMinutes() - startTime.getMinutes();
+                long sec = endTime.getSeconds() - startTime.getSeconds();
+                Toast toast = Toast.makeText(getApplicationContext(), hour + " hours and " + min + " minutes and " + sec + " seconds", Toast.LENGTH_LONG);
                 toast.show();
 
                 stop.setImageBitmap(
                         stopBMOff);
-                stopOn=false;
+                stopOn = false;
 
             }
         }
@@ -409,8 +372,7 @@ public class MainActivity extends AppCompatActivity
 
     // inner listener class
 
-    private class listener implements RecognitionListener
-    {
+    private class listener implements RecognitionListener {
 
         @Override
         public void onReadyForSpeech(Bundle params) {
@@ -438,23 +400,20 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public void onError(int error)
-        {
+        public void onError(int error) {
             t1.speak("fine", TextToSpeech.QUEUE_FLUSH, null);
         }
 
         @Override
-        public void onResults(Bundle results)
-        {
+        public void onResults(Bundle results) {
             String str = new String();
             ArrayList data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             System.out.println(data);
-            for (int i = 0; i < data.size(); i++)
-            {
+            for (int i = 0; i < data.size(); i++) {
                 str += data.get(i);
             }
 
-            Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(getApplicationContext(), data.get(0).toString(), Toast.LENGTH_LONG);
             toast.show();
 
             t1.speak("No", TextToSpeech.QUEUE_FLUSH, null);
@@ -471,7 +430,6 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
-
 
 
 }
