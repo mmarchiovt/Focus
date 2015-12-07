@@ -70,6 +70,15 @@ public class MainActivity extends AppCompatActivity
     private AlarmManagerBroadcastReceiver alarm;
 
     private TextToSpeech t1;
+    private Date startTime;
+    private Date endTime;
+
+    private Date pauseStart;
+    private Date pauseEnd;
+    private long pauseTotal;
+
+    private ArrayList<Date> StartTimes;
+    private ArrayList<Date> PauseTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -136,12 +145,17 @@ public class MainActivity extends AppCompatActivity
         pauseOn = false;
         stopOn = false;
 
+        StartTimes = new ArrayList<>();
+        PauseTimes = new ArrayList<>();
+
         auto = getWindow().getAttributes().screenBrightness;
 
         t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
-            public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
+            public void onInit(int status)
+            {
+                if(status != TextToSpeech.ERROR)
+                {
                     t1.setLanguage(Locale.US);
                 }
             }
@@ -223,7 +237,6 @@ public class MainActivity extends AppCompatActivity
                 drawer.setVisibility(View.INVISIBLE);
 
                 setContentView(R.layout.blue);
-//                layout = (LinearLayout) findViewById(R.id.blue);
 
                 Intent intent = new Intent(this, SplashLoader.class);
                 intent.putExtra("from main", true);
@@ -282,6 +295,14 @@ public class MainActivity extends AppCompatActivity
                         speakBMOn);
                 speechOn=true;
 
+                t1.speak("Question:",TextToSpeech.QUEUE_FLUSH, null);
+
+                //noinspection StatementWithEmptyBody
+                while(t1.isSpeaking())
+                {
+                    //Does Nothing
+                }
+
                 sr = SpeechRecognizer.createSpeechRecognizer(this);
                 sr.setRecognitionListener(new listener());
 
@@ -312,46 +333,73 @@ public class MainActivity extends AppCompatActivity
                         playBMOn);
                 playOn=true;
 
+                stop.setImageBitmap(stopBMOn);
+                stopOn=true;
+
+                long time = System.currentTimeMillis();
+                startTime = new Date(time);
+                System.out.println(startTime.getHours() + ":" + startTime.getMinutes());
+
+                StartTimes.add(startTime);
             }
-            else
-            {
-                play.setImageBitmap(
-                        playBMOff);
-                playOn=false;
-            }
+
         }
 
         if(v.getId() == R.id.pause)
         {
-            if(!pauseOn)
+            if(!pauseOn && playOn)
             {
                 pause.setImageBitmap(
                         pauseBMOn);
                 pauseOn=true;
 
+                stop.setImageBitmap(stopBMOff);
+                stopOn=false;
+
+                long time = System.currentTimeMillis();
+                pauseStart= new Date(time);
+                PauseTimes.add(pauseStart);
             }
-            else
-            {
+            else {
                 pause.setImageBitmap(
                         pauseBMOff);
-                pauseOn=false;
+                pauseOn = false;
+
+                long time = System.currentTimeMillis();
+                pauseEnd = new Date(time);
+
+                PauseTimes.add(pauseEnd);
+
+                for (int i = 0; i < PauseTimes.size() / 2; i++)
+                {
+                    long temp = PauseTimes.get(i+1).getSeconds() - PauseTimes.get(i).getSeconds();
+                    System.out.println(temp);
+                }
             }
         }
 
         if(v.getId() == R.id.stop)
         {
-            if(!stopOn)
+            if(stopOn && !pauseOn)
             {
-                stop.setImageBitmap(
-                        stopBMOn);
-                stopOn=true;
 
-            }
-            else
-            {
+                play.setImageBitmap(
+                        playBMOff);
+                playOn=false;
+
+                long time = System.currentTimeMillis();
+                endTime = new Date(time);
+
+                long hour = endTime.getHours()-startTime.getHours();
+                long min = endTime.getMinutes()-startTime.getMinutes();
+                long sec = endTime.getSeconds()-startTime.getSeconds();
+                Toast toast = Toast.makeText(getApplicationContext(),hour+" hours and "+min+" minutes and "+sec+" seconds", Toast.LENGTH_LONG);
+                toast.show();
+
                 stop.setImageBitmap(
                         stopBMOff);
                 stopOn=false;
+
             }
         }
     }
@@ -387,8 +435,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public void onError(int error) {
-
+        public void onError(int error)
+        {
+            t1.speak("are you too stupid to answer?", TextToSpeech.QUEUE_FLUSH, null);
         }
 
         @Override
@@ -405,7 +454,7 @@ public class MainActivity extends AppCompatActivity
             Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
             toast.show();
 
-            t1.speak(data.get(0).toString(), TextToSpeech.QUEUE_FLUSH, null);
+            t1.speak("No", TextToSpeech.QUEUE_FLUSH, null);
 
         }
 
