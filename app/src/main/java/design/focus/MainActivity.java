@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity
     private ImageButton stop;
 
     private static final int RESOLUTION = 200;
-    private static final int RESOLUTION2 = 100;
 
     private boolean lightOn;
     private boolean watchOn;
@@ -75,7 +74,6 @@ public class MainActivity extends AppCompatActivity
 
     private Date pauseStart;
     private Date pauseEnd;
-    private long pauseTotal;
 
     private ArrayList<Date> StartTimes;
     private ArrayList<Date> PauseTimes;
@@ -365,6 +363,9 @@ public class MainActivity extends AppCompatActivity
                         pauseBMOff);
                 pauseOn = false;
 
+                stop.setImageBitmap(stopBMOn);
+                stopOn=true;
+
                 long time = System.currentTimeMillis();
                 pauseEnd = new Date(time);
 
@@ -437,7 +438,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onError(int error)
         {
-            t1.speak("are you too stupid to answer?", TextToSpeech.QUEUE_FLUSH, null);
+            t1.speak("fine", TextToSpeech.QUEUE_FLUSH, null);
         }
 
         @Override
