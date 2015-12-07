@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.os.Vibrator;
 import android.content.Context;
 
-
 public class MainActivity extends Activity {
 
+    private ImageView mImageView;
     private TextView mTextView;
 
     @Override
@@ -23,14 +24,9 @@ public class MainActivity extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
+                mImageView = (ImageView) stub.findViewById(R.id.imageView);
+                mTextView = (TextView) findViewById(R.id.textView);
             }
         });
     }
-
-//    public void vibrate(){
-//        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-//        v.vibrate();
-//    }
-
 }
