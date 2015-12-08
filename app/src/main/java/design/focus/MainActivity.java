@@ -1,7 +1,6 @@
 package design.focus;
 
 import android.app.Notification;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity
     private Bitmap stopBMOff;
 
     private static DrawerLayout drawer = null;
-    //private static LinearLayout blue = null;
 
     private SpeechRecognizer sr;
 
@@ -71,10 +69,6 @@ public class MainActivity extends AppCompatActivity
 
     private TextToSpeech t1;
     private Date startTime;
-    private Date endTime;
-
-    private Date pauseStart;
-    private Date pauseEnd;
 
     private ArrayList<Date> StartTimes;
     private ArrayList<Date> PauseTimes;
@@ -358,7 +352,7 @@ public class MainActivity extends AppCompatActivity
                 stopOn=false;
 
                 long time = System.currentTimeMillis();
-                pauseStart= new Date(time);
+                Date pauseStart = new Date(time);
                 PauseTimes.add(pauseStart);
             }
             else {
@@ -370,7 +364,7 @@ public class MainActivity extends AppCompatActivity
                 stopOn=true;
 
                 long time = System.currentTimeMillis();
-                pauseEnd = new Date(time);
+                Date pauseEnd = new Date(time);
 
                 PauseTimes.add(pauseEnd);
 
@@ -389,7 +383,7 @@ public class MainActivity extends AppCompatActivity
                 playOn=false;
 
                 long time = System.currentTimeMillis();
-                endTime = new Date(time);
+                Date endTime = new Date(time);
                 long temp;
                 long total;
                 long result;
