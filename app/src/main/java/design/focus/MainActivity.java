@@ -152,8 +152,8 @@ public class MainActivity extends AppCompatActivity
                     watchOn=true;
                     long time = System.currentTimeMillis();
                     Date resultdate = new Date(time);
-                    Toast toast = Toast.makeText(getApplicationContext(), resultdate.toString(), Toast.LENGTH_LONG);
-                    toast.show();
+                    //Toast toast = Toast.makeText(getApplicationContext(), resultdate.toString(), Toast.LENGTH_LONG);
+                    //toast.show();
                     watchClick();
                 }
                 else {
@@ -258,11 +258,11 @@ public class MainActivity extends AppCompatActivity
                     total = endTime.getTime() - startTime.getTime();
                     result = total - temp;
 
-                    System.out.println("Pause ~" + temp / 1000 + " seconds");
+                    System.out.println("Total Break Time ~" + temp / 1000 + " seconds");
                     System.out.println("Total Trip Time ~" + total / 1000 + " seconds");
                     System.out.println("Total Driving Time ~" + result / 1000 + " seconds");
-                    // Toast toast = Toast.makeText(getApplicationContext(), , Toast.LENGTH_LONG);
-                    // toast.show();
+                     Toast toast = Toast.makeText(getApplicationContext(), "Total Break Time ~" + temp / 1000 + " seconds\n" + "Total Trip Time ~" + total / 1000 + " seconds\n" + "Total Driving Time ~" + result / 1000 + " seconds", Toast.LENGTH_LONG);
+                    toast.show();
 
                     stop.setImageBitmap(stopBMOff);
                     stopOn = false;
