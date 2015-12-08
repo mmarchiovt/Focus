@@ -31,9 +31,16 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
+
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener
-{
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, GoogleApiClient.ConnectionCallbacks
+        {
 
     private ImageButton lightbulb;
     private ImageButton watch;
@@ -269,14 +276,21 @@ public class MainActivity extends AppCompatActivity
             {
                 watch.setImageBitmap(watchBMOn);
                 watchOn=true;
-                Notification notification = new NotificationCompat.Builder(getApplication())
-                        .setSmallIcon(R.drawable.icon)
-                        .extend(new NotificationCompat.WearableExtender())
-                        .build();
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplication());
+                android.support.v7.app.NotificationCompat.WearableExtender wearableExtender =
+                        new android.support.v7.app.NotificationCompat.WearableExtender()
+                                .setHintShowBackgroundOnly(true);
 
-                int notificationId = 1;
-                notificationManager.notify(notificationId, notification);
+                Notification notification =
+                        new android.support.v7.app.NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.icon)
+                                .setContentTitle("Hello Android Wear")
+                                .setContentText("This is from the tryApp.")
+                                .extend(wearableExtender)
+                                .setVibrate(new long[]{1000,1000})
+                                .build();
+
+                NotificationManagerCompat notificationManager =
+                        NotificationManagerCompat.from(this);
 
                 long time = System.currentTimeMillis();
                 Date resultdate = new Date(time);
@@ -426,7 +440,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    // inner listener class
+            @Override
+            public void onConnected(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+
+            }
+
+            // inner listener class
 
     private class listener implements RecognitionListener
     {
