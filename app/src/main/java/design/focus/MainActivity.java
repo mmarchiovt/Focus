@@ -201,13 +201,10 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.share)
+        if (id == R.id.stats)
         {
-
-        }
-        else if (id == R.id.stats)
-        {
-
+            Intent intent = new Intent(this, Statistics.class);
+            startActivity(intent);
         }
         else if (id == R.id.settings)
         {
