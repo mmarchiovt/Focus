@@ -22,10 +22,17 @@ public class MainActivity extends Activity {
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
 
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+            Context context;
+
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
                 mImageView = (ImageView) stub.findViewById(R.id.imageView);
                 mTextView = (TextView) findViewById(R.id.textView);
+//                Vibrator v = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
+//                v.vibrate(2000);
+
+//                ImageButton watch = (ImageButton) findViewById(R.id.w)
+
             }
         });
     }

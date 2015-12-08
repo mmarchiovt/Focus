@@ -1,5 +1,6 @@
 package design.focus;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -266,10 +268,14 @@ public class MainActivity extends AppCompatActivity
             {
                 watch.setImageBitmap(watchBMOn);
                 watchOn=true;
-                NotificationCompat.Builder notification = new NotificationCompat.Builder(this);
+                Notification notification = new NotificationCompat.Builder(getApplication())
                         .setSmallIcon(R.drawable.icon)
-                        .setVibrate(new long[]{1000, 1000})
+                        .extend(new NotificationCompat.WearableExtender())
                         .build();
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplication());
+
+                int notificationId = 1;
+                notificationManager.notify(notificationId, notification);
 
                 long time = System.currentTimeMillis();
                 Date resultdate = new Date(time);
