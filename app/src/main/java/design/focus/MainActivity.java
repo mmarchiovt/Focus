@@ -21,11 +21,9 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.speech.SpeechRecognizer;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.support.v4.app.NotificationCompat;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -71,8 +69,6 @@ public class MainActivity extends AppCompatActivity
 
     private float auto;
 
-    private AlarmManagerBroadcastReceiver alarm;
-
     private TextToSpeech t1;
     private Date startTime;
     private Date endTime;
@@ -103,8 +99,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         setTitle("Focus");
-
-        alarm = new AlarmManagerBroadcastReceiver();
 
         lightbulb = (ImageButton) findViewById(R.id.light);
         watch = (ImageButton) findViewById(R.id.watch);
@@ -222,12 +216,13 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.settings)
         {
             Intent intent = new Intent(this, SettingsActivity.class);
-            intent.putExtra("from main", true);
             startActivity(intent);
         }
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        else {
+            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
 
@@ -282,13 +277,6 @@ public class MainActivity extends AppCompatActivity
                 Date resultdate = new Date(time);
                 Toast toast = Toast.makeText(getApplicationContext(), resultdate.toString(), Toast.LENGTH_LONG);
                 toast.show();
-
-                Context context = this.getApplicationContext();
-                if(alarm != null){
-                    alarm.setOnetimeTimer(context);
-                }else{
-                    Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
-                }
 
             }
             else
