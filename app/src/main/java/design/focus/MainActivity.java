@@ -1,7 +1,9 @@
 package design.focus;
 
 import android.app.Notification;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
@@ -335,7 +337,24 @@ public class MainActivity extends AppCompatActivity
                 startTime = new Date(time);
                 //System.out.println(startTime.getHours() + ":" + startTime.getMinutes());
 
+                PauseTimes.clear();
+                StartTimes.clear();
+
                 StartTimes.add(startTime);
+            }
+            if(playOn && pauseOn)
+            {
+                pause.setImageBitmap(
+                        pauseBMOff);
+                pauseOn = false;
+
+                stop.setImageBitmap(stopBMOn);
+                stopOn=true;
+
+                long time = System.currentTimeMillis();
+                Date pauseEnd = new Date(time);
+
+                PauseTimes.add(pauseEnd);
             }
 
         }
@@ -367,27 +386,30 @@ public class MainActivity extends AppCompatActivity
                 Date pauseEnd = new Date(time);
 
                 PauseTimes.add(pauseEnd);
-
-
-                //System.out.println(PauseTimes);
             }
         }
 
         if(v.getId() == R.id.stop)
         {
-            if(stopOn && !pauseOn)
-            {
+            if(stopOn && !pauseOn) {
 
                 play.setImageBitmap(
                         playBMOff);
-                playOn=false;
+                playOn = false;
 
                 long time = System.currentTimeMillis();
                 Date endTime = new Date(time);
-                long temp;
+                long temp = 0;
                 long total;
                 long result;
-                temp = PauseTimes.get(1).getTime() - PauseTimes.get(0).getTime();
+
+
+                for (int i = 0; i < PauseTimes.size(); i+=2)
+                {
+                    temp += PauseTimes.get(i+1).getTime() - PauseTimes.get(i).getTime();
+                }
+
+
                 total = endTime.getTime() - startTime.getTime();
                 result =  total - temp;
 
@@ -403,6 +425,14 @@ public class MainActivity extends AppCompatActivity
                         stopBMOff);
                 stopOn=false;
 
+                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putLong(getString(R.string.trips), result);
+                editor.apply();
+
+                long item = sharedPref.getLong(getString(R.string.trips), result);
+
+                System.out.println(item);
 
             }
         }

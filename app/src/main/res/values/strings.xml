@@ -69,4 +69,5 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_share_picture">SharePictureActivity</string>
+    <string name="trips" />
 </resources>
