@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.support.v4.app.NotificationCompat;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity
     private Bitmap stopBMOff;
 
     private static DrawerLayout drawer = null;
-    private static LinearLayout blue = null;
+    //private static LinearLayout blue = null;
 
     private SpeechRecognizer sr;
 
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        blue = (LinearLayout) findViewById(R.id.blue);
+        //blue = (LinearLayout) findViewById(R.id.blue);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -350,7 +351,7 @@ public class MainActivity extends AppCompatActivity
 
                 long time = System.currentTimeMillis();
                 startTime = new Date(time);
-                System.out.println(startTime.getHours() + ":" + startTime.getMinutes());
+                //System.out.println(startTime.getHours() + ":" + startTime.getMinutes());
 
                 StartTimes.add(startTime);
             }
@@ -385,11 +386,8 @@ public class MainActivity extends AppCompatActivity
 
                 PauseTimes.add(pauseEnd);
 
-                for (int i = 0; i < PauseTimes.size() / 2; i++)
-                {
-                    long temp = PauseTimes.get(i+1).getSeconds() - PauseTimes.get(i).getSeconds();
-                    System.out.println(temp);
-                }
+
+                //System.out.println(PauseTimes);
             }
         }
 
@@ -404,16 +402,25 @@ public class MainActivity extends AppCompatActivity
 
                 long time = System.currentTimeMillis();
                 endTime = new Date(time);
+                long temp;
+                long total;
+                long result;
+                temp = PauseTimes.get(1).getTime() - PauseTimes.get(0).getTime();
+                total = endTime.getTime() - startTime.getTime();
+                result =  total - temp;
 
-                long hour = endTime.getHours()-startTime.getHours();
-                long min = endTime.getMinutes()-startTime.getMinutes();
-                long sec = endTime.getSeconds()-startTime.getSeconds();
-                Toast toast = Toast.makeText(getApplicationContext(),hour+" hours and "+min+" minutes and "+sec+" seconds", Toast.LENGTH_LONG);
-                toast.show();
+                System.out.println("Pause ~" + temp/1000 + " seconds");
+
+                System.out.println("Total Trip Time ~" + total/1000 + " seconds");
+
+                System.out.println("Total Driving Time ~" + result/1000 + " seconds");
+               // Toast toast = Toast.makeText(getApplicationContext(), , Toast.LENGTH_LONG);
+               // toast.show();
 
                 stop.setImageBitmap(
                         stopBMOff);
                 stopOn=false;
+
 
             }
         }
@@ -482,6 +489,8 @@ public class MainActivity extends AppCompatActivity
         public void onEvent(int eventType, Bundle params) {
 
         }
+
     }
+
 }
 
