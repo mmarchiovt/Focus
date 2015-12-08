@@ -25,9 +25,11 @@ import android.speech.SpeechRecognizer;
 import android.widget.Toast;
 import android.support.v4.app.NotificationCompat;
 
+import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity
@@ -75,6 +77,8 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Date> StartTimes;
     private ArrayList<Date> PauseTimes;
 
+    private int[] globalArray;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -85,7 +89,6 @@ public class MainActivity extends AppCompatActivity
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //blue = (LinearLayout) findViewById(R.id.blue);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -289,7 +292,9 @@ public class MainActivity extends AppCompatActivity
                         speakBMOn);
                 speechOn=true;
 
-                t1.speak("Question:",TextToSpeech.QUEUE_FLUSH, null);
+                globalArray = newMathQuestion();
+
+                t1.speak(("What is " +globalArray[0] + "+" + globalArray[1] + "?"),TextToSpeech.QUEUE_FLUSH, null);
 
                 //noinspection StatementWithEmptyBody
                 while(t1.isSpeaking())
@@ -300,21 +305,19 @@ public class MainActivity extends AppCompatActivity
                 sr = SpeechRecognizer.createSpeechRecognizer(this);
                 sr.setRecognitionListener(new listener());
 
+
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"voice.recognition.test");
 
                 intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
                 sr.startListening(intent);
-
-
             }
             else
             {
                 speech.setImageBitmap(
                        speakBMOff);
                 speechOn=false;
-                sr.cancel();
                 sr.destroy();
             }
         }
@@ -332,7 +335,6 @@ public class MainActivity extends AppCompatActivity
 
                 long time = System.currentTimeMillis();
                 startTime = new Date(time);
-                //System.out.println(startTime.getHours() + ":" + startTime.getMinutes());
 
                 PauseTimes.clear();
                 StartTimes.clear();
@@ -468,7 +470,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onError(int error)
         {
-            t1.speak("fine", TextToSpeech.QUEUE_FLUSH, null);
+           // t1.speak("fine", TextToSpeech.QUEUE_FLUSH, null);
         }
 
         @Override
@@ -485,7 +487,17 @@ public class MainActivity extends AppCompatActivity
             Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
             toast.show();
 
-            t1.speak("No", TextToSpeech.QUEUE_FLUSH, null);
+            int i = globalArray[0]+globalArray[1];
+
+            if (data.get(0).toString().contains(i+""))
+            {
+                t1.speak("correct", TextToSpeech.QUEUE_FLUSH, null);
+            }
+            else
+            {
+                t1.speak("wrong wrong wrong", TextToSpeech.QUEUE_FLUSH, null);
+
+            }
 
         }
 
@@ -498,6 +510,73 @@ public class MainActivity extends AppCompatActivity
         public void onEvent(int eventType, Bundle params) {
 
         }
+
+    }
+
+    public String newQuestion()
+    {
+        Random rand = new Random();
+        int i = rand.nextInt(10);
+        System.out.println(i);
+
+        switch (i)
+        {
+            case 0:
+                return "How many eggs in a dozen?";
+
+
+            case 1:
+                return "How many feathers in a dozen?";
+
+
+            case 2:
+                return "How many rocks in a dozen?";
+
+
+            case 3:
+                return "How many cars in a dozen?";
+
+
+            case 4:
+                return "How many hairs in a dozen?";
+
+
+            case 5:
+                return "How many dogs in a dozen?";
+
+
+            case 6:
+                return "How many cats in a dozen?";
+
+
+            case 7:
+                return "How many fish in a dozen?";
+
+
+            case 8:
+                return "How many apples in a dozen?";
+
+
+            case 9:
+                return "How many shoes in a dozen?";
+
+
+            default:
+                return "hello?";
+
+        }
+    }
+
+    public int[] newMathQuestion()
+    {
+        Random rand = new Random();
+        int x = rand.nextInt(10) + 1;
+        int y = rand.nextInt(10) + 1;
+        int[] a = new int[2];
+        a[0]=x;
+        a[1]=y;
+        return a;
+
 
     }
 
