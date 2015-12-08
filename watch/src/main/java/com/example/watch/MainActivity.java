@@ -1,17 +1,10 @@
 package com.example.watch;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.support.wearable.view.WatchViewStub;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.os.Vibrator;
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Vibrator;
+import android.view.WindowManager;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
@@ -22,11 +15,7 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
 
     private static final String WEAR_MESSAGE_PATH = "/message";
     private GoogleApiClient mApiClient;
-    private ArrayAdapter<String> mAdapter;
     private Vibrator vibrator;
-    private ListView mListView;
-    private ImageView mImageView;
-    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +32,7 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
                 .addConnectionCallbacks( this )
                 .build();
 
-        if( mApiClient != null && !( mApiClient.isConnected() || mApiClient.isConnecting() ) )
+        if(!( mApiClient.isConnected() || mApiClient.isConnecting() ) )
             mApiClient.connect();
     }
 
@@ -65,8 +54,6 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
             @Override
             public void run() {
                 if( messageEvent.getPath().equalsIgnoreCase( WEAR_MESSAGE_PATH ) ) {
-                    mAdapter.add(new String(messageEvent.getData()));
-                    mAdapter.notifyDataSetChanged();
                     vibrator.vibrate(2000);
                 }
             }
@@ -98,6 +85,6 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        //
     }
 }

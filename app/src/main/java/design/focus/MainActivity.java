@@ -40,7 +40,7 @@ import com.google.android.gms.wearable.Wearable;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, GoogleApiClient.ConnectionCallbacks
+        implements NavigationView.OnNavigationItemSelectedListener,  GoogleApiClient.ConnectionCallbacks
         {
 
     private ImageButton lightbulb;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity
     private ImageButton stop;
 
     private static final int RESOLUTION = 200;
+    private GoogleApiClient mApiClient;
 
     private boolean lightOn;
     private boolean watchOn;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity
 
     private ArrayList<Date> StartTimes;
     private ArrayList<Date> PauseTimes;
+    private static final String WEAR_MESSAGE_PATH = "/message";
 
     private int[] globalArray;
 
@@ -134,12 +136,7 @@ public class MainActivity extends AppCompatActivity
         pause.setImageBitmap(pauseBMOff);
         stop.setImageBitmap(stopBMOff);
 
-        lightbulb.setOnClickListener(this);
-        watch.setOnClickListener(this);
-        speech.setOnClickListener(this);
-        play.setOnClickListener(this);
-        pause.setOnClickListener(this);
-        stop.setOnClickListener(this);
+        clickListeners();
 
         //temp
         lightOn = false;
@@ -167,7 +164,229 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @Override
+    private void clickListeners() {
+
+        lightbulb.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!lightOn) {
+                    lightbulb.setImageBitmap(lightBMOn);
+                    lightOn = true;
+
+                    drawer.setVisibility(View.INVISIBLE);
+
+                    setContentView(R.layout.blue);
+
+                    Intent intent = new Intent(getApplicationContext(), SplashLoader.class);
+                    intent.putExtra("from main", true);
+                    startActivity(intent);
+                } else {
+                    lightbulb.setImageBitmap(lightBMOff);
+                    lightOn = false;
+
+                    drawer.setVisibility(View.VISIBLE);
+
+
+                    WindowManager.LayoutParams layout = getWindow().getAttributes();
+                    layout.screenBrightness = auto;
+                    getWindow().setAttributes(layout);
+
+                }
+        }});
+
+        watch.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!watchOn)
+                {
+                    watch.setImageBitmap(watchBMOn);
+                    watchOn=true;
+                    long time = System.currentTimeMillis();
+                    Date resultdate = new Date(time);
+                    Toast toast = Toast.makeText(getApplicationContext(), resultdate.toString(), Toast.LENGTH_LONG);
+                    toast.show();
+                    watchClick();
+                }
+                else
+                {
+                    watch.setImageBitmap(watchBMOff);
+                    watchOn=false;
+                }
+            }
+        });
+
+        speech.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!speechOn)
+                {
+                    speech.setImageBitmap(
+                            speakBMOn);
+                    speechOn=true;
+
+                    globalArray = newMathQuestion();
+
+                    t1.speak(("What is " +globalArray[0] + "+" + globalArray[1] + "?"),TextToSpeech.QUEUE_FLUSH, null);
+
+                    //noinspection StatementWithEmptyBody
+                    while(t1.isSpeaking())
+                    {
+                        //Does Nothing
+                    }
+
+                    sr = SpeechRecognizer.createSpeechRecognizer(getApplicationContext());
+                    sr.setRecognitionListener(new listener());
+
+
+                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"voice.recognition.test");
+
+                    intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+                    sr.startListening(intent);
+                }
+                else
+                {
+                    speech.setImageBitmap(
+                            speakBMOff);
+                    speechOn=false;
+                    sr.destroy();
+                }
+            }});
+        play.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!playOn)
+                {
+                    play.setImageBitmap(
+                            playBMOn);
+                    playOn=true;
+
+                    stop.setImageBitmap(stopBMOn);
+                    stopOn=true;
+
+                    long time = System.currentTimeMillis();
+                    startTime = new Date(time);
+
+                    PauseTimes.clear();
+                    StartTimes.clear();
+
+                    StartTimes.add(startTime);
+                }
+                if(playOn && pauseOn)
+                {
+                    pause.setImageBitmap(
+                            pauseBMOff);
+                    pauseOn = false;
+
+                    stop.setImageBitmap(stopBMOn);
+                    stopOn=true;
+
+                    long time = System.currentTimeMillis();
+                    Date pauseEnd = new Date(time);
+
+                    PauseTimes.add(pauseEnd);
+                }
+            }});
+        pause.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!pauseOn && playOn)
+                {
+                    pause.setImageBitmap(
+                            pauseBMOn);
+                    pauseOn=true;
+
+                    stop.setImageBitmap(stopBMOff);
+                    stopOn=false;
+
+                    long time = System.currentTimeMillis();
+                    Date pauseStart = new Date(time);
+                    PauseTimes.add(pauseStart);
+                }
+                else {
+                    pause.setImageBitmap(
+                            pauseBMOff);
+                    pauseOn = false;
+
+                    stop.setImageBitmap(stopBMOn);
+                    stopOn=true;
+
+                    long time = System.currentTimeMillis();
+                    Date pauseEnd = new Date(time);
+
+                    PauseTimes.add(pauseEnd);
+                }
+            }});
+        stop.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(stopOn && !pauseOn) {
+
+                    play.setImageBitmap(
+                            playBMOff);
+                    playOn = false;
+
+                    long time = System.currentTimeMillis();
+                    Date endTime = new Date(time);
+                    long temp = 0;
+                    long total;
+                    long result;
+
+
+                    for (int i = 0; i < PauseTimes.size(); i+=2)
+                    {
+                        temp += PauseTimes.get(i+1).getTime() - PauseTimes.get(i).getTime();
+                    }
+
+
+                    total = endTime.getTime() - startTime.getTime();
+                    result =  total - temp;
+
+                    System.out.println("Pause ~" + temp/1000 + " seconds");
+
+                    System.out.println("Total Trip Time ~" + total/1000 + " seconds");
+
+                    System.out.println("Total Driving Time ~" + result/1000 + " seconds");
+                    // Toast toast = Toast.makeText(getApplicationContext(), , Toast.LENGTH_LONG);
+                    // toast.show();
+
+                    stop.setImageBitmap(
+                            stopBMOff);
+                    stopOn=false;
+
+                    SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putLong(getString(R.string.trips), result);
+                    editor.apply();
+
+                    long item = sharedPref.getLong(getString(R.string.trips), result);
+
+                    System.out.println(item);
+                }
+            }});
+    }
+
+            private void watchClick() {
+                android.support.v7.app.NotificationCompat.WearableExtender wearableExtender =
+                        new android.support.v7.app.NotificationCompat.WearableExtender()
+                                .setHintShowBackgroundOnly(true);
+
+                Notification notification =
+                        new android.support.v7.app.NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.icon)
+                                .setContentTitle("Hello Truck Driver")
+                                .setContentText("Please be careful!")
+                                .extend(wearableExtender)
+                                .setVibrate(new long[]{1000,1000})
+                                .build();
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                int notificationId = 1;
+                notificationManager.notify(notificationId, notification);
+            }
+
+            @Override
     public void onBackPressed()
     {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -229,227 +448,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void onClick(View v)
-    {
-        if(v.getId() == R.id.light)
-        {
-            if(!lightOn)
-            {
-                lightbulb.setImageBitmap(lightBMOn);
-                lightOn=true;
-
-                drawer.setVisibility(View.INVISIBLE);
-
-                setContentView(R.layout.blue);
-
-                Intent intent = new Intent(this, SplashLoader.class);
-                intent.putExtra("from main", true);
-                startActivity(intent);
-            }
-            else
-            {
-                lightbulb.setImageBitmap(lightBMOff);
-                lightOn=false;
-
-                drawer.setVisibility(View.VISIBLE);
-
-
-                WindowManager.LayoutParams layout = getWindow().getAttributes();
-                layout.screenBrightness = auto;
-                getWindow().setAttributes(layout);
-
-            }
-        }
-
-        if(v.getId() == R.id.watch)
-        {
-            if(!watchOn)
-            {
-                watch.setImageBitmap(watchBMOn);
-                watchOn=true;
-                android.support.v7.app.NotificationCompat.WearableExtender wearableExtender =
-                        new android.support.v7.app.NotificationCompat.WearableExtender()
-                                .setHintShowBackgroundOnly(true);
-
-                Notification notification =
-                        new android.support.v7.app.NotificationCompat.Builder(this)
-                                .setSmallIcon(R.drawable.icon)
-                                .setContentTitle("Hello Android Wear")
-                                .setContentText("This is from the tryApp.")
-                                .extend(wearableExtender)
-                                .setVibrate(new long[]{1000,1000})
-                                .build();
-
-                NotificationManagerCompat notificationManager =
-                        NotificationManagerCompat.from(this);
-
-                long time = System.currentTimeMillis();
-                Date resultdate = new Date(time);
-                Toast toast = Toast.makeText(getApplicationContext(), resultdate.toString(), Toast.LENGTH_LONG);
-                toast.show();
-
-            }
-            else
-            {
-                watch.setImageBitmap(
-                        watchBMOff);
-                watchOn=false;
-            }
-
-        }
-
-        if(v.getId() == R.id.speech)
-        {
-            if(!speechOn)
-            {
-                speech.setImageBitmap(
-                        speakBMOn);
-                speechOn=true;
-
-                globalArray = newMathQuestion();
-
-                t1.speak(("What is " +globalArray[0] + "+" + globalArray[1] + "?"),TextToSpeech.QUEUE_FLUSH, null);
-
-                //noinspection StatementWithEmptyBody
-                while(t1.isSpeaking())
-                {
-                    //Does Nothing
-                }
-
-                sr = SpeechRecognizer.createSpeechRecognizer(this);
-                sr.setRecognitionListener(new listener());
-
-
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"voice.recognition.test");
-
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
-                sr.startListening(intent);
-            }
-            else
-            {
-                speech.setImageBitmap(
-                       speakBMOff);
-                speechOn=false;
-                sr.destroy();
-            }
-        }
-
-        if(v.getId() == R.id.play)
-        {
-            if(!playOn)
-            {
-                play.setImageBitmap(
-                        playBMOn);
-                playOn=true;
-
-                stop.setImageBitmap(stopBMOn);
-                stopOn=true;
-
-                long time = System.currentTimeMillis();
-                startTime = new Date(time);
-
-                PauseTimes.clear();
-                StartTimes.clear();
-
-                StartTimes.add(startTime);
-            }
-            if(playOn && pauseOn)
-            {
-                pause.setImageBitmap(
-                        pauseBMOff);
-                pauseOn = false;
-
-                stop.setImageBitmap(stopBMOn);
-                stopOn=true;
-
-                long time = System.currentTimeMillis();
-                Date pauseEnd = new Date(time);
-
-                PauseTimes.add(pauseEnd);
-            }
-
-        }
-
-        if(v.getId() == R.id.pause)
-        {
-            if(!pauseOn && playOn)
-            {
-                pause.setImageBitmap(
-                        pauseBMOn);
-                pauseOn=true;
-
-                stop.setImageBitmap(stopBMOff);
-                stopOn=false;
-
-                long time = System.currentTimeMillis();
-                Date pauseStart = new Date(time);
-                PauseTimes.add(pauseStart);
-            }
-            else {
-                pause.setImageBitmap(
-                        pauseBMOff);
-                pauseOn = false;
-
-                stop.setImageBitmap(stopBMOn);
-                stopOn=true;
-
-                long time = System.currentTimeMillis();
-                Date pauseEnd = new Date(time);
-
-                PauseTimes.add(pauseEnd);
-            }
-        }
-
-        if(v.getId() == R.id.stop)
-        {
-            if(stopOn && !pauseOn) {
-
-                play.setImageBitmap(
-                        playBMOff);
-                playOn = false;
-
-                long time = System.currentTimeMillis();
-                Date endTime = new Date(time);
-                long temp = 0;
-                long total;
-                long result;
-
-
-                for (int i = 0; i < PauseTimes.size(); i+=2)
-                {
-                    temp += PauseTimes.get(i+1).getTime() - PauseTimes.get(i).getTime();
-                }
-
-
-                total = endTime.getTime() - startTime.getTime();
-                result =  total - temp;
-
-                System.out.println("Pause ~" + temp/1000 + " seconds");
-
-                System.out.println("Total Trip Time ~" + total/1000 + " seconds");
-
-                System.out.println("Total Driving Time ~" + result/1000 + " seconds");
-               // Toast toast = Toast.makeText(getApplicationContext(), , Toast.LENGTH_LONG);
-               // toast.show();
-
-                stop.setImageBitmap(
-                        stopBMOff);
-                stopOn=false;
-
-                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putLong(getString(R.string.trips), result);
-                editor.apply();
-
-                long item = sharedPref.getLong(getString(R.string.trips), result);
-
-                System.out.println(item);
-
-            }
-        }
-    }
 
             @Override
             public void onConnected(Bundle bundle) {
@@ -459,6 +457,25 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onConnectionSuspended(int i) {
 
+            }
+            private void sendMessage( final String path, final String text ) {
+                new Thread( new Runnable() {
+                    @Override
+                    public void run() {
+                        NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes( mApiClient ).await();
+                        for(Node node : nodes.getNodes()) {
+                            MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                                    mApiClient, node.getId(), path, text.getBytes() ).await();
+                        }
+
+                        runOnUiThread( new Runnable() {
+                            @Override
+                            public void run() {
+                                //mEditText.setText( "" );
+                            }
+                        });
+                    }
+                }).start();
             }
 
             // inner listener class
