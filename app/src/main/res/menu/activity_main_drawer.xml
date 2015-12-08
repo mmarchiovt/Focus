@@ -5,8 +5,6 @@
         <menu>
             <item android:id="@+id/stats" android:icon="@android:drawable/ic_menu_sort_by_size"
                 android:title="Statistics" />
-            <item android:id="@+id/share" android:icon="@android:drawable/ic_menu_share"
-                android:title="Share" />
             <item android:id="@+id/settings" android:icon="@android:drawable/ic_menu_edit"
                 android:title="Settings" />
         </menu>

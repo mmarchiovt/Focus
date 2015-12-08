@@ -3,6 +3,7 @@ package design.focus;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
@@ -21,14 +22,14 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.speech.SpeechRecognizer;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.support.v4.app.NotificationCompat;
 
-import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -72,23 +73,18 @@ public class MainActivity extends AppCompatActivity
     private Bitmap stopBMOff;
 
     private static DrawerLayout drawer = null;
-    //private static LinearLayout blue = null;
 
     private SpeechRecognizer sr;
 
     private float auto;
 
-    private AlarmManagerBroadcastReceiver alarm;
-
     private TextToSpeech t1;
     private Date startTime;
-    private Date endTime;
-
-    private Date pauseStart;
-    private Date pauseEnd;
 
     private ArrayList<Date> StartTimes;
     private ArrayList<Date> PauseTimes;
+
+    private int[] globalArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -100,7 +96,6 @@ public class MainActivity extends AppCompatActivity
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //blue = (LinearLayout) findViewById(R.id.blue);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -110,8 +105,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         setTitle("Focus");
-
-        alarm = new AlarmManagerBroadcastReceiver();
 
         lightbulb = (ImageButton) findViewById(R.id.light);
         watch = (ImageButton) findViewById(R.id.watch);
@@ -218,23 +211,21 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.share)
+        if (id == R.id.stats)
         {
-
-        }
-        else if (id == R.id.stats)
-        {
-
+            Intent intent = new Intent(this, Statistics.class);
+            startActivity(intent);
         }
         else if (id == R.id.settings)
         {
             Intent intent = new Intent(this, SettingsActivity.class);
-            intent.putExtra("from main", true);
             startActivity(intent);
         }
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        else {
+            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
 
@@ -297,13 +288,6 @@ public class MainActivity extends AppCompatActivity
                 Toast toast = Toast.makeText(getApplicationContext(), resultdate.toString(), Toast.LENGTH_LONG);
                 toast.show();
 
-                Context context = this.getApplicationContext();
-                if(alarm != null){
-                    alarm.setOnetimeTimer(context);
-                }else{
-                    Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
-                }
-
             }
             else
             {
@@ -322,7 +306,9 @@ public class MainActivity extends AppCompatActivity
                         speakBMOn);
                 speechOn=true;
 
-                t1.speak("Question:",TextToSpeech.QUEUE_FLUSH, null);
+                globalArray = newMathQuestion();
+
+                t1.speak(("What is " +globalArray[0] + "+" + globalArray[1] + "?"),TextToSpeech.QUEUE_FLUSH, null);
 
                 //noinspection StatementWithEmptyBody
                 while(t1.isSpeaking())
@@ -333,21 +319,19 @@ public class MainActivity extends AppCompatActivity
                 sr = SpeechRecognizer.createSpeechRecognizer(this);
                 sr.setRecognitionListener(new listener());
 
+
                 Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"voice.recognition.test");
 
                 intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
                 sr.startListening(intent);
-
-
             }
             else
             {
                 speech.setImageBitmap(
                        speakBMOff);
                 speechOn=false;
-                sr.cancel();
                 sr.destroy();
             }
         }
@@ -365,9 +349,25 @@ public class MainActivity extends AppCompatActivity
 
                 long time = System.currentTimeMillis();
                 startTime = new Date(time);
-                //System.out.println(startTime.getHours() + ":" + startTime.getMinutes());
+
+                PauseTimes.clear();
+                StartTimes.clear();
 
                 StartTimes.add(startTime);
+            }
+            if(playOn && pauseOn)
+            {
+                pause.setImageBitmap(
+                        pauseBMOff);
+                pauseOn = false;
+
+                stop.setImageBitmap(stopBMOn);
+                stopOn=true;
+
+                long time = System.currentTimeMillis();
+                Date pauseEnd = new Date(time);
+
+                PauseTimes.add(pauseEnd);
             }
 
         }
@@ -384,7 +384,7 @@ public class MainActivity extends AppCompatActivity
                 stopOn=false;
 
                 long time = System.currentTimeMillis();
-                pauseStart= new Date(time);
+                Date pauseStart = new Date(time);
                 PauseTimes.add(pauseStart);
             }
             else {
@@ -396,30 +396,33 @@ public class MainActivity extends AppCompatActivity
                 stopOn=true;
 
                 long time = System.currentTimeMillis();
-                pauseEnd = new Date(time);
+                Date pauseEnd = new Date(time);
 
                 PauseTimes.add(pauseEnd);
-
-
-                //System.out.println(PauseTimes);
             }
         }
 
         if(v.getId() == R.id.stop)
         {
-            if(stopOn && !pauseOn)
-            {
+            if(stopOn && !pauseOn) {
 
                 play.setImageBitmap(
                         playBMOff);
-                playOn=false;
+                playOn = false;
 
                 long time = System.currentTimeMillis();
-                endTime = new Date(time);
-                long temp;
+                Date endTime = new Date(time);
+                long temp = 0;
                 long total;
                 long result;
-                temp = PauseTimes.get(1).getTime() - PauseTimes.get(0).getTime();
+
+
+                for (int i = 0; i < PauseTimes.size(); i+=2)
+                {
+                    temp += PauseTimes.get(i+1).getTime() - PauseTimes.get(i).getTime();
+                }
+
+
                 total = endTime.getTime() - startTime.getTime();
                 result =  total - temp;
 
@@ -435,6 +438,14 @@ public class MainActivity extends AppCompatActivity
                         stopBMOff);
                 stopOn=false;
 
+                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putLong(getString(R.string.trips), result);
+                editor.apply();
+
+                long item = sharedPref.getLong(getString(R.string.trips), result);
+
+                System.out.println(item);
 
             }
         }
@@ -483,7 +494,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onError(int error)
         {
-            t1.speak("fine", TextToSpeech.QUEUE_FLUSH, null);
+           // t1.speak("fine", TextToSpeech.QUEUE_FLUSH, null);
         }
 
         @Override
@@ -500,7 +511,17 @@ public class MainActivity extends AppCompatActivity
             Toast toast = Toast.makeText(getApplicationContext(),data.get(0).toString(), Toast.LENGTH_LONG);
             toast.show();
 
-            t1.speak("No", TextToSpeech.QUEUE_FLUSH, null);
+            int i = globalArray[0]+globalArray[1];
+
+            if (data.get(0).toString().contains(i+""))
+            {
+                t1.speak("correct", TextToSpeech.QUEUE_FLUSH, null);
+            }
+            else
+            {
+                t1.speak("wrong wrong wrong", TextToSpeech.QUEUE_FLUSH, null);
+
+            }
 
         }
 
@@ -513,6 +534,73 @@ public class MainActivity extends AppCompatActivity
         public void onEvent(int eventType, Bundle params) {
 
         }
+
+    }
+
+    public String newQuestion()
+    {
+        Random rand = new Random();
+        int i = rand.nextInt(10);
+        System.out.println(i);
+
+        switch (i)
+        {
+            case 0:
+                return "How many eggs in a dozen?";
+
+
+            case 1:
+                return "How many feathers in a dozen?";
+
+
+            case 2:
+                return "How many rocks in a dozen?";
+
+
+            case 3:
+                return "How many cars in a dozen?";
+
+
+            case 4:
+                return "How many hairs in a dozen?";
+
+
+            case 5:
+                return "How many dogs in a dozen?";
+
+
+            case 6:
+                return "How many cats in a dozen?";
+
+
+            case 7:
+                return "How many fish in a dozen?";
+
+
+            case 8:
+                return "How many apples in a dozen?";
+
+
+            case 9:
+                return "How many shoes in a dozen?";
+
+
+            default:
+                return "hello?";
+
+        }
+    }
+
+    public int[] newMathQuestion()
+    {
+        Random rand = new Random();
+        int x = rand.nextInt(10) + 1;
+        int y = rand.nextInt(10) + 1;
+        int[] a = new int[2];
+        a[0]=x;
+        a[1]=y;
+        return a;
+
 
     }
 
